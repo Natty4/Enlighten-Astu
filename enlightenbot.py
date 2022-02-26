@@ -78,7 +78,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
     # Instead of sending a new message, edit the message that
     # originated the CallbackQuery. This gives the feeling of an
     # interactive menu.
-    query.edit_message_text(text="Welcom to ASTU ENLIGHTENMENT \n Morthan 20000 files 1100< users", reply_markup=reply_markup)
+    query.edit_message_text(text="Welcom back 🙋‍♂️ {query.from_user.first_name} to Enlighten ASTU  \n Morthan 20000 files 1100< users are in this platform !", reply_markup=reply_markup)
     return INITIAL
 
 
@@ -251,7 +251,7 @@ def courses(update: Update, context: CallbackContext) -> int:
         ]
 
         reply_markup = InlineKeyboardMarkup(keyboard) 
-        query.from_user.edit_message_text(text=f"No courses in {QUERY['department']} yet  \n\n use /start command to continue", reply_markup = reply_markup)
+        query.edit_message_text(text=f"No courses in {QUERY['department']} yet  \n\n use /start command to continue", reply_markup = reply_markup)
         return INITIAL
 
 def show_option(update: Update, context: CallbackContext) -> int:
@@ -293,7 +293,7 @@ def show_option(update: Update, context: CallbackContext) -> int:
         ]
 
         reply_markup = InlineKeyboardMarkup(keyboard)    
-        query.from_user.edit_message_text(text= reply_text, reply_markup = reply_markup)
+        query.edit_message_text(text= reply_text, reply_markup = reply_markup)
         return SERVE
     else:
         keyboard = [
@@ -304,7 +304,7 @@ def show_option(update: Update, context: CallbackContext) -> int:
         ]
 
         reply_markup = InlineKeyboardMarkup(keyboard) 
-        query.from_user.edit_message_text(text="Oops something Wrong  \n\n use /start command to continue",)
+        query.edit_message_text(text="Oops something Wrong  \n\n use /start command to continue",)
         return INITIAL
  
 
@@ -407,14 +407,14 @@ def end(update: Update, context: CallbackContext) -> int:
     ConversationHandler that the conversation is over.
     """
     query = update.callback_query
-    query.answer()
+    query.answer('session closed')
     query.edit_message_text(text="See you next time!")
     return ConversationHandler.END
 
 def help_command(update: Update, context: CallbackContext) -> None:
     """Displays info on how to use the bot."""
     update.message.reply_text(
-        "Use /start to use this bot. Use "
+        "Use /start to use this bot. \n\n and if face any anomality pleas let us know in the feed back section"
     )
 
 def error(update: Update, context: CallbackContext) -> None:
