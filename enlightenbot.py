@@ -419,7 +419,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 def error(update: Update, context: CallbackContext) -> None:
     """Displays info on error."""
-    context.send_message(update.message.chat.id, "Oops an error occurred | 500  \n\n use /start command to start again")
+    context.bot.send_message(update.message.chat.id, "Oops an error occurred | 500  \n\n use /start command to start again")
 
 def main() -> None:
     """Run the bot."""
