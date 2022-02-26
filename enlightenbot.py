@@ -441,10 +441,10 @@ def main() -> None:
     dispatcher.add_error_handler(error)
 
     # Start the Bot on Local Machin
-    updater.start_polling()
+    # updater.start_polling()
 
     # Start the Bot on Cloud
-    # updater.start_webhook(listen="0.0.0.0", port = os.environ.get("PORT", 443), url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
+    updater.start_webhook(listen="0.0.0.0", port = os.environ.get("PORT", 443), url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
