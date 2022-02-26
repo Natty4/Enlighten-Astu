@@ -106,6 +106,7 @@ CAMPUS = 'ASTU'
 SEMESTERS = {}
 SCHOOLS = []
 COURSES = []
+DEPARTMENTS = {}
 DATA = fetcher.get_semesters(CAMPUS)
 def retrieve(update: Update, context: CallbackContext) -> int:
     """Show new choice of buttons"""
@@ -181,7 +182,6 @@ def department(update: Update, context: CallbackContext) -> int:
     
     
     
-    
     SEMESTERS = [semester for semester in DATA if semester['semes_number'] == int(QUERY['semester'])]
  
     for semester in SEMESTERS:
@@ -189,6 +189,7 @@ def department(update: Update, context: CallbackContext) -> int:
     # DEPARTMENTS = [school for school in SCHOOLS if school['id'] == int(QUERY['school'])]
     for school in SCHOOLS:
         if school['id'] == int(QUERY['school']):
+            global DEPARTMENTS
             DEPARTMENTS = school['department'] 
     if DEPARTMENTS:
 
@@ -251,7 +252,12 @@ def courses(update: Update, context: CallbackContext) -> int:
         ]
 
         reply_markup = InlineKeyboardMarkup(keyboard) 
-        query.edit_message_text(text=f"No courses in {QUERY['department']} yet  \n\n use /start command to continue", reply_markup = reply_markup)
+        for dpt in DEPARTMENTS:
+            if dpt['id'] = QUERY['department']:
+                dept_name = dpt['short_name']
+            else:
+                dept_name = 'none'
+        query.edit_message_text(text=f"No courses in {dept_name} yet  \n\n use /start command to continue", reply_markup = reply_markup)
         return INITIAL
 
 def show_option(update: Update, context: CallbackContext) -> int:
