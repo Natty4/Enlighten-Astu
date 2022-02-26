@@ -16,6 +16,7 @@ from telegram.ext import (
     Filters,
 )
 import fetcher
+import os
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -32,8 +33,8 @@ START, END = range(2)
 RETRIEVE, UPLOAD = range(2)
 SEMES ={ '1': 'Freshman 1st', '2': 'Freshman 2nd', '3': 'Sophomore 1st', '4': 'Sophomore 2nd', '5': 'Junior 1st', '6': 'Junior 2nd', '7': 'Senior 1st', '8': 'Senior 2nd', '9': 'GC 1st', '10': 'GC 2nd'}
 QUERY = {}
-TOKEN = "1983490259:AAHKVaonvjLMO5D7uAHKlV-wnotEdEsBwfI"
-ID = 441609134
+TOKEN = os.environ.get("TOKEN") 
+ID = os.environ.get("ID") 
 PORT = int(os.environ.get('PORT', '8443'))
 def start(update: Update, context: CallbackContext) -> int:
     QUERY = {}
@@ -380,7 +381,7 @@ def error(update: Update, context: CallbackContext) -> None:
 def main() -> None:
     """Run the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater(TOKEN)
+    updater = Updater(token = TOKEN,use_context = True)
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
