@@ -124,8 +124,16 @@ def retrieve(update: Update, context: CallbackContext) -> int:
         )
         return SEMESTER
     else:
-        query.from_user.send_message(text="Invalid Callback Data | 400 \n use /start command to continue",)
-        return ConversationHandler.END
+        keyboard = [
+        [
+        InlineKeyboardButton("Home 🛖", callback_data=str(START)),
+        ],
+
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard) 
+        query.from_user.edit_message_text(text=f"Oops something wrong \n\n use /start command to continue", reply_markup = reply_markup)
+        return INITIAL
 
 
 
@@ -150,12 +158,20 @@ def school(update: Update, context: CallbackContext) -> int:
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         query.edit_message_text(
-            text="First CallbackQueryHandler, Choose your School", reply_markup=reply_markup)
+            text="Choose your School", reply_markup=reply_markup)
 
         return DEPARTMENT
     else:
-        query.from_user.send_message(text="Invalid Callback Data | 400 \n use /start command to continue",)
-        return ConversationHandler.END
+        keyboard = [
+        [
+        InlineKeyboardButton("Home 🛖", callback_data=str(START)),
+        ],
+
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard) 
+        query.from_user.edit_message_text(text=f"Oops some Thing wrong \n\n use /start command to continue", reply_markup = reply_markup)
+        return INITIAL
 
 
 def department(update: Update, context: CallbackContext) -> int:
@@ -182,12 +198,20 @@ def department(update: Update, context: CallbackContext) -> int:
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         query.edit_message_text(
-            text="department CallbackQueryHandler, Choose your Department", reply_markup=reply_markup)
+            text="Choose your Department", reply_markup=reply_markup)
 
         return COURSE
     else:
-        query.from_user.send_message(text="Invalid Callback Data | 404 \n\n use /start command to continue",)
-        return ConversationHandler.END
+        keyboard = [
+        [
+        InlineKeyboardButton("Home 🛖", callback_data=str(START)),
+        ],
+
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard) 
+        query.from_user.edit_message_text(text=f"Oops some Thing wrong \n\n use /start command to continue", reply_markup = reply_markup)
+        return INITIAL
 
 
 def courses(update: Update, context: CallbackContext) -> int:
@@ -219,8 +243,16 @@ def courses(update: Update, context: CallbackContext) -> int:
 
         return OPTION
     else:
-        query.from_user.send_message(text="Invalid Callback Data | 404",)
-        return ConversationHandler.END
+        keyboard = [
+        [
+        InlineKeyboardButton("Home 🛖", callback_data=str(START)),
+        ],
+
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard) 
+        query.from_user.edit_message_text(text=f"No courses in {QUERY['department']} yet  \n\n use /start command to continue", reply_markup = reply_markup)
+        return INITIAL
 
 def show_option(update: Update, context: CallbackContext) -> int:
     """Show new choice of buttons"""
@@ -261,11 +293,22 @@ def show_option(update: Update, context: CallbackContext) -> int:
         ]
 
         reply_markup = InlineKeyboardMarkup(keyboard)    
-        query.from_user.send_message(text= reply_text, reply_markup = reply_markup)
+        query.from_user.edit_message_text(text= reply_text, reply_markup = reply_markup)
         return SERVE
     else:
-        query.from_user.send_message(text="Invalid Callback Data | 404 \n\n use /start command to continue",)
-        return ConversationHandler.END
+        keyboard = [
+        [
+        InlineKeyboardButton("Home 🛖", callback_data=str(START)),
+        ],
+
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard) 
+        query.from_user.edit_message_text(text="Oops something Wrong  \n\n use /start command to continue",)
+        return INITIAL
+ 
+
+
 
 
 
