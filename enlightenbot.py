@@ -253,7 +253,7 @@ def courses(update: Update, context: CallbackContext) -> int:
 
         reply_markup = InlineKeyboardMarkup(keyboard) 
         for dpt in DEPARTMENTS:
-            if dpt['id'] = QUERY['department']:
+            if dpt['id'] == QUERY['department']:
                 dept_name = dpt['short_name']
             else:
                 dept_name = 'none'
