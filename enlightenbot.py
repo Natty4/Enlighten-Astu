@@ -34,6 +34,7 @@ SEMES ={ '1': 'Freshman 1st', '2': 'Freshman 2nd', '3': 'Sophomore 1st', '4': 'S
 QUERY = {}
 TOKEN = "1983490259:AAHKVaonvjLMO5D7uAHKlV-wnotEdEsBwfI"
 ID = 441609134
+PORT = int(os.environ.get('PORT', '8443'))
 def start(update: Update, context: CallbackContext) -> int:
     QUERY = {}
     """Send message on `/start`."""
@@ -444,7 +445,7 @@ def main() -> None:
     # updater.start_polling()
 
     # Start the Bot on Cloud
-    updater.start_webhook(listen="0.0.0.0", port = 443, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
+    updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
