@@ -1,0 +1,1 @@
+web: gunicorn Enlight.wsgi --log-file -
