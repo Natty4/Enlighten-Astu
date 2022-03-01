@@ -37,6 +37,12 @@ TOKEN = os.environ.get("TOKEN")
 ID = os.environ.get("ID") 
 PORT = int(os.environ.get('PORT', '8443'))
 def start(update: Update, context: CallbackContext) -> int:
+    if 'last_mes' in context.user_data:
+        try:
+            context.bot.delete_message(chat_id=update.message.from_user.id, message_id=context.user_data['last_mes'])
+        except:
+            pass
+        del context.user_data['last_mes']
     QUERY = {}
     """Send message on `/start`."""
     # Get user that sent /start and log his name
@@ -55,7 +61,8 @@ def start(update: Update, context: CallbackContext) -> int:
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     # Send message with text and appended InlineKeyboard
-    update.message.reply_text(text="Welcom to ASTU ENLIGHTENMENT \n Morthan 20000 files 1100< users", reply_markup=reply_markup)
+    mes_id = update.message.reply_text(text="Welcome to ASTU ENLIGHTENMENT \n Morthan 20000 files 1100< users", reply_markup=reply_markup)
+    context.user_data['last_mes'] = mes_id
     # Tell ConversationHandler that we're in state `FIRST` now
     return INITIAL
 
@@ -78,7 +85,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
     # Instead of sending a new message, edit the message that
     # originated the CallbackQuery. This gives the feeling of an
     # interactive menu.
-    query.edit_message_text(text="Welcom back 🙋‍♂️ {query.from_user.first_name} to Enlighten ASTU  \n Morthan 20000 files 1100< users are in this platform !", reply_markup=reply_markup)
+    query.edit_message_text(text="Welcome back 🙋‍♂️ {query.from_user.first_name} to Enlighten ASTU  \n Morthan 20000 files 1100< users are in this platform !", reply_markup=reply_markup)
     return INITIAL
 
 
