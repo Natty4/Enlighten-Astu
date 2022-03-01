@@ -41,7 +41,8 @@ def start(update: Update, context: CallbackContext) -> int:
         try:
             context.bot.delete_message(chat_id=update.message.from_user.id, message_id=context.user_data['last_mes'])
         except Exception as e:
-            logger.log(f"exception: {e}")
+#             logger.log(f"exception: {e}")
+            logger.info("%s exception __________________ ", e)
         del context.user_data['last_mes']
     QUERY = {}
     """Send message on `/start`."""
@@ -74,7 +75,8 @@ def start_over(update: Update, context: CallbackContext) -> int:
         try:
             context.bot.delete_message(chat_id=update.message.from_user.id, message_id=context.user_data['last_mes'])
         except Exception as e:
-            logger.log(f"exception: {e}")
+#             logger.log(f"exception: {e}")
+            logger.info("%s exception __________________ ", e)
         del context.user_data['last_mes']
     QUERY = {}
     query = update.callback_query
