@@ -70,6 +70,12 @@ def start(update: Update, context: CallbackContext) -> int:
 def start_over(update: Update, context: CallbackContext) -> int:
     """Prompt same text & keyboard as `start` does but not as new message"""
     # Get CallbackQuery from Update
+    if 'last_mes' in context.user_data:
+        try:
+            context.bot.delete_message(chat_id=update.message.from_user.id, message_id=context.user_data['last_mes'])
+        except:
+            pass
+        del context.user_data['last_mes']
     QUERY = {}
     query = update.callback_query
     # CallbackQueries need to be answered, even if no notification to the user is needed
@@ -85,7 +91,8 @@ def start_over(update: Update, context: CallbackContext) -> int:
     # Instead of sending a new message, edit the message that
     # originated the CallbackQuery. This gives the feeling of an
     # interactive menu.
-    query.edit_message_text(text="Welcome back 🙋‍♂️ {query.from_user.first_name} to Enlighten ASTU  \n Morthan 20000 files 1100< users are in this platform !", reply_markup=reply_markup)
+    mes_id = query.edit_message_text(text="Welcome back 🙋‍♂️ {query.from_user.first_name} to Enlighten ASTU  \n Morthan 20000 files 1100< users are in this platform !", reply_markup=reply_markup)
+    context.user_data['last_mes'] = mes_id
     return INITIAL
 
 
