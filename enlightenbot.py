@@ -64,7 +64,7 @@ def start(update: Update, context: CallbackContext) -> int:
     reply_markup = InlineKeyboardMarkup(keyboard)
     # Send message with text and appended InlineKeyboard
     mes_id = update.message.reply_text(text="Welcome to ASTU ENLIGHTENMENT \n Morthan 20000 files 1100< users", reply_markup=reply_markup)
-    context.user_data['last_mes'] = mes_id
+    context.user_data['last_mes'] = mes_id.message_id
     # Tell ConversationHandler that we're in state `FIRST` now
     return INITIAL
 
@@ -96,7 +96,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
     # originated the CallbackQuery. This gives the feeling of an
     # interactive menu.
     mes_id = query.edit_message_text(text="Welcome back 🙋‍♂️ {query.from_user.first_name} to Enlighten ASTU  \n Morthan 20000 files 1100< users are in this platform !", reply_markup=reply_markup)
-    context.user_data['last_mes'] = mes_id
+    context.user_data['last_mes'] = mes_id.message_id
     return INITIAL
 
 
