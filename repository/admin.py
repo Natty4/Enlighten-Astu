@@ -42,3 +42,14 @@ class SemesterAdmin(admin.ModelAdmin):
 @admin.register(TGUser)
 class TGUserAdmin(admin.ModelAdmin):
 	list_display = ['first_name', 'last_name', 'username', 'updated']
+
+
+@admin.register(LecturePPT)
+class LecturePPTAdmin(admin.ModelAdmin):
+	list_display = ['cm', 'tg_file_id']
+@admin.register(LecturePDF)
+class LecturePDFAdmin(admin.ModelAdmin):
+	list_display = ['cm', 'tg_file_id']
+@admin.register(LectureBook)
+class LectureBookAdmin(admin.ModelAdmin):
+	list_display = ['cm', 'tg_file_id']

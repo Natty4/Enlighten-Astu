@@ -13,9 +13,42 @@ from .serializers import *
 class TGUserCreateApiView(APIView):
 	queryset = TGUser.objects.all()
 	serializer_class = TGUserSerializer
-
 	def post(self, request, format=None):
 		serializer = TGUserSerializer(data = request.data)
+		if serializer.is_valid(raise_exception = True):
+			serializer.save()
+			return Response(status = status.HTTP_201_CREATED)
+		return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+class LecturePPTCreateApiView(APIView):
+	queryset = LecturePPT.objects.all()
+	serializer_class = PPTSerializer
+
+	def post(self, request, format=None):
+		serializer = PPTSerializer(data = request.data)
+		if serializer.is_valid(raise_exception = True):
+			serializer.save()
+			return Response(status = status.HTTP_201_CREATED)
+		return Response(status = status.HTTP_400_BAD_REQUEST)
+
+class LecturePDFCreateApiView(APIView):
+	queryset = LecturePDF.objects.all()
+	serializer_class = PDFSerializer
+
+	def post(self, request, format=None):
+		serializer = PDFSerializer(data = request.data)
+		if serializer.is_valid(raise_exception = True):
+			serializer.save()
+			return Response(status = status.HTTP_201_CREATED)
+		return Response(status = status.HTTP_400_BAD_REQUEST)
+
+class LectureBookCreateApiView(APIView):
+	queryset = LectureBook.objects.all()
+	serializer_class = BookSerializer
+
+	def post(self, request, format=None):
+		serializer = BookSerializer(data = request.data)
 		if serializer.is_valid(raise_exception = True):
 			serializer.save()
 			return Response(status = status.HTTP_201_CREATED)
@@ -315,6 +348,18 @@ class SchoolDetailApiView(APIView):
 
 
 
+
+
+
+# def patch(self, request, cm_id, format=None):
+#         cm = CourseMaterial.objects.get(id=cm_id)
+
+#         serializer = UserSerializerRead(cm, data=request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(status=HTTP_204_NO_CONTENT)
+
+#         return Response(status=HTTP_400_BAD_REQUEST)
 
 
 # class CourseMaterialDetailByFormatApiView(APIView):

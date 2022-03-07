@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 
 class TGUser(models.Model):
+	user_tg_id = models.CharField(max_length = 100, unique = True)
 	username = models.CharField(max_length = 100, null = True, blank = True)
 	first_name = models.CharField(max_length = 100, null = True, blank = True)
 	last_name = models.CharField(max_length = 100, null = True, blank = True)
@@ -9,8 +10,7 @@ class TGUser(models.Model):
 	updated = models.DateTimeField(auto_now = True)
 
 	def __str__(self):
-		return self.username + self.first_name + self.last_name
-
+		return self.username + ' : ' + self.first_name if self.username else self.filename
 class Campus(models.Model):
 	name = models.CharField(max_length = 369)
 	about = models.TextField()
@@ -114,11 +114,13 @@ class LectureBook(models.Model):
 		return path
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'books', on_delete = models.CASCADE)
-	book = models.FileField(upload_to = upload_to_books_dir)
-	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ')
+	book = models.FileField(upload_to = upload_to_books_dir, null = True, blank = True)
+	tg_file_id = models.CharField(max_length = 255)
+	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
+	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
 
 	def __str__(self):
-		return f'{self.title} : {self.cm.course_name}'
+		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
 
 
 class LecturePPT(models.Model):
@@ -129,11 +131,13 @@ class LecturePPT(models.Model):
 		return path
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'ppts', on_delete = models.CASCADE)
-	ppt = models.FileField(upload_to = upload_to_ppt_dir)
-	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ')
+	ppt = models.FileField(upload_to = upload_to_ppt_dir, null = True, blank = True)
+	tg_file_id = models.CharField(max_length = 255)
+	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
+	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
 
 	def __str__(self):
-		return f'{self.title} : {self.cm.course_name}'
+		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
 
 
 class LecturePDF(models.Model):
@@ -144,11 +148,13 @@ class LecturePDF(models.Model):
 		return path
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'pdfs', on_delete = models.CASCADE)
-	pdf = models.FileField(upload_to = upload_to_pdf_dir)
-	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ')
+	pdf = models.FileField(upload_to = upload_to_pdf_dir, null = True, blank = True)
+	tg_file_id = models.CharField(max_length = 255)
+	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
+	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
 
 	def __str__(self):
-		return f'{self.title} : {self.cm.course_name}'
+		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
 
 
 class Image(models.Model):
@@ -159,8 +165,10 @@ class Image(models.Model):
 		return path
 	
 	cm = models.ForeignKey(to = AssignmentExam, related_name = 'images', on_delete = models.CASCADE)
-	img = models.ImageField(upload_to = upload_to_img_dir)
-	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ')
+	img = models.ImageField(upload_to = upload_to_img_dir, null = True, blank = True)
+	tg_file_id = models.CharField(max_length = 255)
+	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
+	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
 
 	def __str__(self):
-		return f'{self.title} : {self.cm.course_name}'
+		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
