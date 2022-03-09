@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import datetime
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
+
 
 class TGUser(models.Model):
 	user_tg_id = models.CharField(max_length = 100, unique = True)
@@ -114,7 +116,7 @@ class LectureBook(models.Model):
 		return path
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'books', on_delete = models.CASCADE)
-	book = models.FileField(upload_to = upload_to_books_dir, null = True, blank = True)
+	book = models.FileField(upload_to = upload_to_books_dir, null = True, blank = True, storage=RawMediaCloudinaryStorage())
 	tg_file_id = models.CharField(max_length = 255)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
@@ -131,7 +133,7 @@ class LecturePPT(models.Model):
 		return path
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'ppts', on_delete = models.CASCADE)
-	ppt = models.FileField(upload_to = upload_to_ppt_dir, null = True, blank = True)
+	ppt = models.FileField(upload_to = upload_to_ppt_dir, null = True, blank = True, storage=RawMediaCloudinaryStorage())
 	tg_file_id = models.CharField(max_length = 255)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
@@ -148,7 +150,7 @@ class LecturePDF(models.Model):
 		return path
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'pdfs', on_delete = models.CASCADE)
-	pdf = models.FileField(upload_to = upload_to_pdf_dir, null = True, blank = True)
+	pdf = models.FileField(upload_to = upload_to_pdf_dir, null = True, blank = True, storage=RawMediaCloudinaryStorage())
 	tg_file_id = models.CharField(max_length = 255)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)

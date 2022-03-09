@@ -6,9 +6,9 @@
 
 /* VARIABLE DEFINITIONS */
 :root {
-  --primary: #79aec8;
-  --secondary: #417690;
-  --accent: #f5dd5d;
+  --primary: #ff92b1;
+  --secondary: #ff6c92;
+  --accent: #00ffff;
   --primary-fg: #fff;
 
   --body-fg: #333;
@@ -59,7 +59,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary: #264b5d;
+    --primary: #ff92b1;
     --primary-fg: #eee;
 
     --body-fg: #eeeeee;
@@ -70,8 +70,8 @@
     --breadcrumbs-link-fg: #e0e0e0;
     --breadcrumbs-bg: var(--primary);
 
-    --link-fg: #81d4fa;
-    --link-hover-color: #4ac1f7;
+    --link-fg: #00ffff;
+    --link-hover-color: #ff6c92;
     --link-selected-fg: #6f94c6;
 
     --hairline-color: #272727;
@@ -84,7 +84,7 @@
 
     --darkened-bg: #212121;
     --selected-bg: #1b1b1b;
-    --selected-row: #00363a;
+    --selected-row: #031313;
 
     --close-button-bg: #333333;
     --close-button-hover-bg: #666666;

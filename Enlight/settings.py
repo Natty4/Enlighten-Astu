@@ -10,6 +10,9 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJ_SECRET_KEY')
+CLOUD_NAME_X = os.environ.get('CLOUD_NAME_X')
+API_KEY_X = os.environ.get('API_KEY_X')
+API_SECRET_X = os.environ.get('API_SECRET_X')
 
 DEBUG = False
 
@@ -27,7 +30,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'django.contrib.sites',
 
 
@@ -194,13 +200,22 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': CLOUD_NAME_X, 
+    'API_KEY': API_KEY_X, 
+    'API_SECRET': API_SECRET_X,
+    # 'EXCLUDE_DELETE_ORPHANED_MEDIA_PATHS': (BASE_DIR / 'media/', BASE_DIR / 'deleted/' ),
+}
+
+
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static/'
-# STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'static/' 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media/'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Default primary key field type
