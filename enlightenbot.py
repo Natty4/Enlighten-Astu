@@ -441,9 +441,14 @@ def help_command(update: Update, context: CallbackContext) -> None:
         "Use /start to use this bot. \n\n and if face any anomality pleas let us know in the feed back section"
     )
 
-# def error(update: Update, context: CallbackContext) -> None:
-#     """Displays info on error."""
-#     context.bot.send_message(update.message.from_user.id, "Oops an error occurred | 500  \n\n use /start command to start again")
+def error(update: Update, context: CallbackContext) -> None:
+    """Displays info on error."""
+    if update.callback_query:
+        user = update.callback_query.from_user
+    else:
+        user = update.message.from_user
+
+    context.bot.send_message(user.id, "Oops an error occurred | 500  \n\n use /start command to start again")
 
 def main() -> None:
     """Run the bot."""
