@@ -14,7 +14,7 @@ CLOUD_NAME_X = os.environ.get('CLOUD_NAME_X')
 API_KEY_X = os.environ.get('API_KEY_X')
 API_SECRET_X = os.environ.get('API_SECRET_X')
 
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
