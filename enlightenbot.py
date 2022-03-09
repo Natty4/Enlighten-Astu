@@ -128,8 +128,9 @@ DEPARTMENTS = {}
 DATA = fetcher.get_semesters(CAMPUS)
 def retrieve(update: Update, context: CallbackContext) -> int:
     """Show new choice of buttons"""
+    query = update.callback_query
     if DATA:
-        query = update.callback_query
+#         query = update.callback_query
         query.answer()
         QUERY = {}
         keyboard = [
