@@ -7,7 +7,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 class InstructorRegistrationSerializer(serializers.ModelSerializer):
 
     password2 = serializers.CharField(style={'input_type':'password'}, write_only=True)
-
+    verify_url = 'sevenoon.internx.com/'
     class Meta:
         model = Instructor
         fields = ['first_name','last_name', 'username', 'email', 'phone_number', 'campus', 'password', 'password2',]
@@ -39,6 +39,7 @@ class InstructorRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.is_instructor = True
         user.save()
+        
         return user
 
 
