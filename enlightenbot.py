@@ -441,9 +441,9 @@ def help_command(update: Update, context: CallbackContext) -> None:
         "Use /start to use this bot. \n\n and if face any anomality pleas let us know in the feed back section"
     )
 
-def error(update: Update, context: CallbackContext) -> None:
-    """Displays info on error."""
-    context.bot.send_message(update.message.from_user.id, "Oops an error occurred | 500  \n\n use /start command to start again")
+# def error(update: Update, context: CallbackContext) -> None:
+#     """Displays info on error."""
+#     context.bot.send_message(update.message.from_user.id, "Oops an error occurred | 500  \n\n use /start command to start again")
 
 def main() -> None:
     """Run the bot."""
@@ -507,7 +507,7 @@ def main() -> None:
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, quick_access))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(conv_handler)
-    dispatcher.add_error_handler(error)
+#     dispatcher.add_error_handler(error)
 
     # Start the Bot on Local Machin
     # updater.start_polling()
