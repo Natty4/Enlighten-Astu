@@ -152,7 +152,7 @@ def retrieve(update: Update, context: CallbackContext) -> int:
         ]
 
         reply_markup = InlineKeyboardMarkup(keyboard) 
-        query.from_user.edit_message_text(text=f"Oops something wrong \n\n use /start command to continue", reply_markup = reply_markup)
+        query.edit_message_text(text=f"Oops something wrong \n\n use /start command to continue", reply_markup = reply_markup)
         return INITIAL
 
 
