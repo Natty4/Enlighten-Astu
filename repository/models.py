@@ -174,3 +174,6 @@ class Image(models.Model):
 
 	def __str__(self):
 		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
+	
+	
+	
