@@ -9,7 +9,7 @@ from django.views.static import serve
 # from django.conf.urls import url
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('csec/', admin.site.urls),
     path(('api/auth/'), include('users.urls')),
     path(('api/'), include('repository.urls')),
     re_path(r'^media/(?P<path>.*)$', serve,{'document_root':       settings.MEDIA_ROOT}), 
