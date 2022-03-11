@@ -15,7 +15,7 @@ API_KEY_X = os.environ.get('API_KEY_X')
 API_SECRET_X = os.environ.get('API_SECRET_X')
 
 DEBUG = False
-ALLOWED_HOSTS = ['enlightenapi.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
