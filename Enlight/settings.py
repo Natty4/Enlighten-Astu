@@ -14,8 +14,8 @@ CLOUD_NAME_X = os.environ.get('CLOUD_NAME_X')
 API_KEY_X = os.environ.get('API_KEY_X')
 API_SECRET_X = os.environ.get('API_SECRET_X')
 
-DEBUG = False
-ALLOWED_HOSTS = ['*']
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1', 'enlightenapi.herokuapp.com']
 
 
 # Application definition
