@@ -16,7 +16,7 @@ class LectureBookInline(admin.TabularInline):
 class CourseMaterialAdmin(admin.ModelAdmin):
 	list_display = ['course_name', 'course_code', 'semester', 'department', 'created_by', 'updated', 'is_active']
 	list_filter = ['semester', 'department', 'course_name', 'created_by', 'updated']
-	search_fields = ['course_name', 'course_code', 'department']
+	search_fields = ['course_name', 'course_code']
 	inlines = [LecturePPTInline, LecturePDFInline, LectureBookInline]
 
 
