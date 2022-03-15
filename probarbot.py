@@ -765,7 +765,7 @@ def ppt_manager(update: Update, context: CallbackContext):
 
         }
     fetcher.upload_file(file_obj, typ)
-    context.bot.copy_message(chat_id=UDBID,
+    context.bot.copy_message(chat_id=NCLOUDX,
                     from_chat_id=update.effective_message.chat_id,
                     message_id=update.effective_message.message_id,
                     caption = caption_text)
@@ -815,7 +815,7 @@ def pdf_manager(update: Update, context: CallbackContext):
 
         }
     fetcher.upload_file(file_obj, typ)
-    context.bot.copy_message(chat_id=UDBID,
+    context.bot.copy_message(chat_id=NCLOUDX,
                     from_chat_id=update.effective_message.chat_id,
                     message_id=update.effective_message.message_id,
                     caption = caption_text)
@@ -855,7 +855,7 @@ def customer_service_information(update: Update, context: CallbackContext) -> in
     MSG = f"Feedback from [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot"
     MSG += '\n___Feedback-Message___\n'
     MSG += text 
-    context.bot.send_message(chat_id= UDBID ,text=MSG)
+    context.bot.send_message(chat_id= NCLOUDX ,text=MSG)
     reply_text = f"Lots of thanks {user.first_name} for your feedback !"
     update.message.reply_text(
         text = reply_text,
