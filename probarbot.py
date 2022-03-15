@@ -57,7 +57,7 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 
 reply_keyboard_0 = [
-    ['/download', '/share'],
+    ['Download', 'Share'],
     ['Feed Back', 'How To'],
 ]
 reply_keyboard_1 = [
@@ -892,7 +892,7 @@ def main() -> None:
     
 
     download_handeler = ConversationHandler(
-        entry_points=[CommandHandler('download', download)],
+        entry_points=[MessageHandler(Filters.regex('^Download$'), download)],
         states={
      
             CUTOMER_SERVICE: [
@@ -950,7 +950,7 @@ def main() -> None:
     )
     
     upload_handler = ConversationHandler(
-        entry_points=[CommandHandler('share', share)],
+        entry_points=[MessageHandler(Filters.regex('^Share$'), share)],
         states={
 
             SEMESTER: [
@@ -979,8 +979,8 @@ def main() -> None:
             ],
             RECIVE: [
                 MessageHandler(Filters.document.mime_type("application/pdf"),pdf_manager),
-                MessageHandler(Filters.document.mime_type("application/pptx"),ppt_manager),
-                MessageHandler(~(Filters.document.mime_type("application/pdf") | Filters.document.mime_type("application/pptx") | (~Filters.document)), invalid_data_manager),
+                MessageHandler(Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation")),ppt_manager),
+                MessageHandler(~(Filters.document.mime_type("application/pdf") | Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation") | (~Filters.document)), invalid_data_manager),
                 MessageHandler(Filters.regex(pattern='^' + str(START) + '$'),start_over),
                 MessageHandler(Filters.regex('^Done$'),start_over),
               
