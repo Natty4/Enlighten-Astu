@@ -12,7 +12,7 @@ from telegram import *
 
 # import fetcher modul
 import fetcher
-
+import os
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -112,9 +112,9 @@ def start(update: Update, context: CallbackContext) -> int:
     """Send message on `/start`."""
     # Get user that sent /start and log his name
     user = update.message.from_user
-    # context.bot.send_message(chat_id= ID ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot")
-    context.bot.send_message(chat_id= UDBID ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot")
-    context.bot.send_message(chat_id=UDBID ,text=f'{update}')
+    # context.bot.send_message(chat_id= ADMIN ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot")
+    context.bot.send_message(chat_id= NCLOUDX ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot")
+    context.bot.send_message(chat_id= NCLOUDX ,text=f'{update}')
     user_obj = {
     'user_tg_id': user.id,
     'username': user.username,
