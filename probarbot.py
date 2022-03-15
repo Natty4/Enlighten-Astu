@@ -57,7 +57,7 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 
 reply_keyboard_0 = [
-    ['Download', 'Share'],
+    ['Download', '/share'],
     ['Feed Back', 'How To'],
 ]
 reply_keyboard_1 = [
@@ -950,7 +950,7 @@ def main() -> None:
     )
     
     upload_handler = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('^Share$'), share)],
+        entry_points=[CommandHandler('share', share)],
         states={
 
             SEMESTER: [
