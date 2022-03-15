@@ -144,7 +144,7 @@ def get_all_by_sem_and_dep(sem, dep):
 
 def get_course_tg(sem, dep, ccode):
 	url = f'{baseUrl}/api/cms/{sem}/{dep}/{ccode}'
-	print(url)
+# 	print(url)
 	data = requests.get(url)
 	# print(data)
 	if data.status_code == 404:
@@ -162,7 +162,7 @@ def get_course_tg(sem, dep, ccode):
 		j = resp[i.lower() + 's']
 		for file in j:
 			# url.append(baseUrl + file[i.lower()])
-			print(file, "File__________")
+# 			print(file, "File__________")
 			fid.append(file['tg_file_id'])
 
 		path[i] = fid
@@ -182,7 +182,7 @@ def get_course_tg(sem, dep, ccode):
 
 def get_fast(ccode):
 	url = f'{baseUrl}/api/cms/{ccode}'
-	print(url)
+# 	print(url)
 	data = requests.get(url)
 	if data.status_code == 404:
 		return False
