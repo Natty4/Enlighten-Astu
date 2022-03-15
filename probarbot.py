@@ -979,7 +979,7 @@ def main() -> None:
             ],
             RECIVE: [
                 MessageHandler(Filters.document.mime_type("application/pdf"),pdf_manager),
-                MessageHandler(Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation")),ppt_manager),
+                MessageHandler((Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation")),ppt_manager),
                 MessageHandler(~(Filters.document.mime_type("application/pdf") | Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation") | (~Filters.document)), invalid_data_manager),
                 MessageHandler(Filters.regex(pattern='^' + str(START) + '$'),start_over),
                 MessageHandler(Filters.regex('^Done$'),start_over),
