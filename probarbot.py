@@ -10,24 +10,6 @@ from typing import Dict
 from telegram.ext import *
 from telegram import *
 
-# from telegram import (ReplyKeyboardMarkup, 
-#     Update, 
-#     ReplyKeyboardRemove, 
-#     ChatAction, 
-#     InlineKeyboardButton, 
-#     InlineKeyboardMarkup,
-#     )
-# from telegram.ext import (
-#     Updater,
-#     CommandHandler,
-#     ConversationHandler,
-#     CallbackQueryHandler,
-#     CallbackContext,
-#     MessageHandler,
-#     Filters,
-#     PicklePersistence,
-# )
-
 # import fetcher modul
 import fetcher
 
@@ -47,15 +29,18 @@ START, END = range(2)
 SHARE, FIND = range(2)
 CUTOMER_SERVICE, CHOOSING, TYPING_REPLY, TYPING_CHOICE, SERVE = range(5)
 RETRIEVE, UPLOAD = range(2)
-TOKEN = '5049663114:AAEzkaBUwXIbf-1hUDkG9gw9U7XHz3JbM_0'
+
 QUERY = {}
 SEMES ={ '1': 'Freshman 1st', '2': 'Freshman 2nd', '3': 'Sophomore 1st', '4': 'Sophomore 2nd', '5': 'Junior 1st', '6': 'Junior 2nd', '7': 'Senior 1st', '8': 'Senior 2nd', '9': 'GC 1st', '10': 'GC 2nd'}
 CAMPUS = 'ASTU'
 DATA = fetcher.get_semesters(CAMPUS)
 SEMESTERS = {}
 SCHOOLS = []
-ID = 441609134
-UDBID = '-1001509436095'
+NCLOUDX = os.environ.get("NCLOUDX")
+TOKEN = os.environ.get("TOKEN") 
+ADMIN = os.environ.get("ADMIN") 
+PORT = int(os.environ.get('PORT', '8443'))
+
 # DEPARTMENT = []
 # for data in DATA:
 #     for school in data['school_in_this_semes']:
@@ -518,7 +503,6 @@ def upload(update: Update, context: CallbackContext) -> int:
 
 
 
-
 """ --Upload Sction-- """
 
 CAMPUS = 'ASTU'
@@ -905,9 +889,7 @@ def main() -> None:
     dispatcher = updater.dispatcher
     # Feed Back|How To
     # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
-
-
-
+    
 
     download_handeler = ConversationHandler(
         entry_points=[CommandHandler('download', download)],
@@ -1025,10 +1007,15 @@ def main() -> None:
     dispatcher.add_handler(start_handler)
 
     # Start the Bot
-    updater.start_polling()
-
+    # updater.start_polling()
+    
+    # Start the Bot on Cloud
+    updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
     updater.idle()
 
 
 if __name__ == '__main__':
     main()
+    
+    
+    
