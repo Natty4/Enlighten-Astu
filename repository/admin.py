@@ -14,8 +14,9 @@ class LectureBookInline(admin.TabularInline):
 
 @admin.register(CourseMaterial)
 class CourseMaterialAdmin(admin.ModelAdmin):
-	list_display = ['course_name', 'course_code', 'semester', 'created_by', 'updated', 'is_active']
-	list_filter = ['course_name', 'created_by', 'updated']
+	list_display = ['course_name', 'course_code', 'semester', 'department', 'created_by', 'updated', 'is_active']
+	list_filter = ['semester', 'department', 'course_name', 'created_by', 'updated']
+	search_fields = ['course_name', 'course_code', 'department']
 	inlines = [LecturePPTInline, LecturePDFInline, LectureBookInline]
 
 
@@ -42,6 +43,7 @@ class SemesterAdmin(admin.ModelAdmin):
 @admin.register(TGUser)
 class TGUserAdmin(admin.ModelAdmin):
 	list_display = ['first_name', 'last_name', 'username', 'updated']
+	search_fields = ['first_name','username']
 
 
 @admin.register(LecturePPT)
