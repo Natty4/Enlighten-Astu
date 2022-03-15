@@ -178,7 +178,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
 def download(update: Update, context: CallbackContext) -> int:
     """download the conversation, display any stored data and ask user for input."""
     user = update.message.from_user
-    print(context.user_data, 'download')
+#     print(context.user_data, 'download')
     reply_text = f"📖📚📒📕📙📘📗📚📖\n"
     reply_text += f"Hi! {user.first_name} Welcom "
     if context.user_data:
@@ -198,7 +198,7 @@ def download(update: Update, context: CallbackContext) -> int:
 
 def semester_choice(update: Update, context: CallbackContext) -> int:
 
-    print(context.user_data, 'Semester')
+#     print(context.user_data, 'Semester')
     if update.callback_query:
         query = update.callback_query
         text = 'semester'
@@ -230,9 +230,9 @@ def semester_choice(update: Update, context: CallbackContext) -> int:
 
 def department_choice(update: Update, context: CallbackContext) -> int:
     """Ask the user for info about the selected predefined choice."""
-    print(context.user_data, 'Department')
+#     print(context.user_data, 'Department')
     text = update.message.text.lower()
-    print(text, "______text")
+#     print(text, "______text")
     context.user_data['query'] = text
     if context.user_data.get('semester'):
         context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.TYPING)
@@ -284,7 +284,7 @@ def received_information(update: Update, context: CallbackContext) -> int:
         except ValueError:
             is_number = False
         return is_number
-    print(context.user_data, 'Recived Info')
+#     print(context.user_data, 'Recived Info')
     text = update.message.text
     category = context.user_data['query']
     if is_number(text):
@@ -325,9 +325,9 @@ def received_information(update: Update, context: CallbackContext) -> int:
 
 def Reset_history(update: Update, context: CallbackContext):
     """Store info provided by user and ask for the next category."""
-    print(context.user_data, 'Reset History')
+#     print(context.user_data, 'Reset History')
     text = update.message.text
-    print(text)
+#     print(text)
     clean_data(context.user_data)
     if context.user_data.get('semester') and context.user_data.get('department'):
         markup = markup_three
@@ -347,7 +347,7 @@ def Reset_history(update: Update, context: CallbackContext):
 
 def show_history(update: Update, context: CallbackContext) -> None:
     """Display the gathered info."""
-    print(context.user_data, 'show_history')
+#     print(context.user_data, 'show_history')
     update.message.reply_text(
         f"This is your current : {facts_to_str(context.user_data)}"
     )
@@ -449,7 +449,7 @@ def serve_file(update: Update, context: CallbackContext):
         files = []
         for i,j in data.items():
             files = j['files'][query.text]
-            print(j)
+#             print(j)
         MSG = f"<strong> {j['course_name']} </strong> \n"
         MSG += '\n__________________________________________\n\n'
         MSG += "<strong> course_name </strong>: " + f"{j['course_name']} \n"
