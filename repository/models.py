@@ -28,7 +28,7 @@ class Campus(models.Model):
 
 class School(models.Model):
 	department = models.ManyToManyField(to = 'Department', related_name = 'school')
-	name = models.CharField(max_length = 369)
+	name = models.CharField(max_length = 369, unique = True)
 	about = models.TextField()
 	is_active = models.BooleanField(default = True)
 
@@ -38,7 +38,7 @@ class School(models.Model):
 
 
 class Department(models.Model):
-	name = models.CharField(max_length = 600)
+	name = models.CharField(max_length = 600, unique = True)
 	short_name = models.CharField(max_length = 369)
 	is_active = models.BooleanField(default = True)
 
@@ -47,8 +47,8 @@ class Department(models.Model):
 		return self.short_name
 
 class Semester(models.Model):
-	name = models.CharField(max_length = 369)
-	semes_number = models.IntegerField()
+	name = models.CharField(max_length = 369, unique = True)
+	semes_number = models.IntegerField(unique = True)
 	school_in_this_semes = models.ManyToManyField(to = School)
 	campus = models.ForeignKey(to = Campus, related_name = 'semester', on_delete = models.SET_NULL, null = True)
 
@@ -65,8 +65,8 @@ class CourseMaterial(models.Model):
 		path = f'{self.course_name}_{self.course_code}/{self.created_by}/{dt}/{filename}'
 		return path
 
-	course_code = models.CharField(max_length = 369)
-	course_name = models.CharField(max_length = 369)
+	course_code = models.CharField(max_length = 369, unique = True)
+	course_name = models.CharField(max_length = 369, unique = True)
 	course_description = models.TextField(help_text = "About the course / files atched to this course")
 	thumbnail = models.ImageField(upload_to = upload_to_thumb_dir, blank = True, null = True)
 	semester = models.ForeignKey(to = Semester, on_delete = models.SET_NULL, null = True)
@@ -92,7 +92,7 @@ class AssignmentExam(models.Model):
 			path = f'{self.course_name}_{self.course_code}/{self.semester}/{dt}/{filename}'
 		return path
 	
-	course_code = models.CharField(max_length = 369)
+	course_code = models.CharField(max_length = 369, unique = True)
 	course_name = models.CharField(max_length = 369)
 	semester = models.CharField(max_length = 369)
 	additional_info = models.TextField(null = True, blank = True)
@@ -117,7 +117,7 @@ class LectureBook(models.Model):
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'books', on_delete = models.CASCADE)
 	book = models.FileField(upload_to = upload_to_books_dir, null = True, blank = True, storage=RawMediaCloudinaryStorage())
-	tg_file_id = models.CharField(max_length = 255)
+	tg_file_id = models.CharField(max_length = 255, unique = True)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
 
@@ -134,7 +134,7 @@ class LecturePPT(models.Model):
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'ppts', on_delete = models.CASCADE)
 	ppt = models.FileField(upload_to = upload_to_ppt_dir, null = True, blank = True, storage=RawMediaCloudinaryStorage())
-	tg_file_id = models.CharField(max_length = 255)
+	tg_file_id = models.CharField(max_length = 255, unique = True)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
 
@@ -151,7 +151,7 @@ class LecturePDF(models.Model):
 	
 	cm = models.ForeignKey(to = CourseMaterial, related_name = 'pdfs', on_delete = models.CASCADE)
 	pdf = models.FileField(upload_to = upload_to_pdf_dir, null = True, blank = True, storage=RawMediaCloudinaryStorage())
-	tg_file_id = models.CharField(max_length = 255)
+	tg_file_id = models.CharField(max_length = 255, unique = True)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
 
@@ -168,7 +168,7 @@ class Image(models.Model):
 	
 	cm = models.ForeignKey(to = AssignmentExam, related_name = 'images', on_delete = models.CASCADE)
 	img = models.ImageField(upload_to = upload_to_img_dir, null = True, blank = True)
-	tg_file_id = models.CharField(max_length = 255)
+	tg_file_id = models.CharField(max_length = 255, unique = True)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
 
