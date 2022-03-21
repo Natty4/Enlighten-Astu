@@ -900,7 +900,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
                 MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-                CommandHandler('Download', download),
+                MessageHandler(Filters.regex('^Download$'), download),
             ],
             CHOOSING: [
                 MessageHandler(Filters.regex('^(Semester)$'), semester_choice),
@@ -910,7 +910,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Home 🛖$'), start_over),
                 MessageHandler(Filters.regex('^Feed Back$'), feed_back),
                 MessageHandler(Filters.regex('^How To$'), how_to),
-                CommandHandler('Download', download),
+                MessageHandler(Filters.regex('^Download$'), download),
             ],
             TYPING_CHOICE: [
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')), semester_choice),
@@ -919,7 +919,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Home 🛖$'), start_over),
                 MessageHandler(Filters.regex('^Feed Back$'), feed_back),
                 MessageHandler(Filters.regex('^How To$'), how_to),
-                CommandHandler('Download', download),
+                MessageHandler(Filters.regex('^Download$'), download),
             ],
             TYPING_REPLY: [
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),received_information),
@@ -928,7 +928,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Home 🛖$'), start_over),
                 MessageHandler(Filters.regex('^Feed Back$'), feed_back),
                 MessageHandler(Filters.regex('^How To$'), how_to),
-                CommandHandler('Download', download),
+                MessageHandler(Filters.regex('^Download$'), download),
             ],
             SERVE: [
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -937,7 +937,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Home 🛖$'), start_over),
                 MessageHandler(Filters.regex('^Feed Back$'), feed_back),
                 MessageHandler(Filters.regex('^How To$'), how_to),
-                CommandHandler('Download', download),
+                MessageHandler(Filters.regex('^Download$'), download),
               
             ],
             
