@@ -978,7 +978,7 @@ def main() -> None:
         states={
      
             CUTOMER_SERVICE: [
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+              
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),customer_service_information),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -986,7 +986,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
             CHOOSING: [
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+          
                 MessageHandler(Filters.regex('^Semester$'), semester_choice),
                 MessageHandler(Filters.regex('^Department$'), department_choice),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
@@ -997,7 +997,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
             TYPING_CHOICE: [
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+  
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')), semester_choice),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -1007,7 +1007,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
             TYPING_REPLY: [
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+           
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),received_information),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
