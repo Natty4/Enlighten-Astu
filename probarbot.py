@@ -21,7 +21,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Stages
-INITIAL, SEMESTER, DEPARTMENT, COURSE,OPTION, SERVE, LAST, RECIVE  = range(8)
+INITIAL, SEMESTER, DEPARTMENT, COURSE, OPTION, SERVE, FASTSERVE, LAST, RECIVE  = range(9)
 
 # Callback data
 ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, ELEVEN = range(12)
@@ -31,7 +31,8 @@ CUTOMER_SERVICE, CHOOSING, TYPING_REPLY, TYPING_CHOICE, SERVE = range(5)
 RETRIEVE, UPLOAD = range(2)
 
 QUERY = {}
-SEMES ={ '1': 'Freshman 1st', '2': 'Freshman 2nd', '3': 'Sophomore 1st', '4': 'Sophomore 2nd', '5': 'Junior 1st', '6': 'Junior 2nd', '7': 'Senior 1st', '8': 'Senior 2nd', '9': 'GC 1st', '10': 'GC 2nd'}
+SEMES = { '1': 'Freshman 1st', '2': 'Freshman 2nd', '3': 'Sophomore 1st', '4': 'Sophomore 2nd', '5': 'Junior 1st', '6': 'Junior 2nd', '7': 'Senior 1st', '8': 'Senior 2nd', '9': 'GC 1st', '10': 'GC 2nd'}
+RSEMES = { 'Freshman 1st': '1',  'Freshman 2nd': '2',  'Sophomore 1st': '3',  'Sophomore 2nd': '4',  'Junior 1st': '5',  'Junior 2nd': '6',  'Senior 1st': '7',  'Senior 2nd': '8',  'GC 1st': '9',  'GC 2nd': '10'}
 CAMPUS = 'ASTU'
 DATA = fetcher.get_semesters(CAMPUS)
 SEMESTERS = {}
@@ -41,23 +42,9 @@ TOKEN = os.environ.get("TOKEN")
 ADMIN = os.environ.get("ADMIN") 
 PORT = int(os.environ.get('PORT', '8443'))
 
-# DEPARTMENT = []
-# for data in DATA:
-#     for school in data['school_in_this_semes']:
-#         for department in school['department']:
-#             departments = {}
-#             departments['id'] = department['id'] 
-#             departments['short_name'] = department['short_name'] 
-#             departments['name'] = department['name'] 
-#             departments['school'] = school['name']
-#             DEPARTMENT.append(departments)
-# for dep in DEPARTMENT:
-#     print(dep)
-#     print()
-
 
 reply_keyboard_0 = [
-    ['Download', '/share'],
+    ['Download', 'Share'],
     ['Feed Back', 'How To'],
 ]
 reply_keyboard_1 = [
@@ -126,7 +113,6 @@ def start(update: Update, context: CallbackContext) -> int:
         fetcher.recored_new_user(user_obj)
     except Exception as e:
         print(e,'already exist')
-    # logger.info("User %s started the conversation.", user.first_name)
  
     reply_text = f"📖📚📒📕📙📘📗📚📖\n"
     reply_text += f"Hi! {user.first_name} Welcome "
@@ -176,9 +162,8 @@ def start_over(update: Update, context: CallbackContext) -> int:
 
 
 def download(update: Update, context: CallbackContext) -> int:
-    """download the conversation, display any stored data and ask user for input."""
     user = update.message.from_user
-#     print(context.user_data, 'download')
+
     reply_text = f"📖📚📒📕📙📘📗📚📖\n"
     reply_text += f"Hi! {user.first_name} Welcom "
     if context.user_data:
@@ -198,7 +183,6 @@ def download(update: Update, context: CallbackContext) -> int:
 
 def semester_choice(update: Update, context: CallbackContext) -> int:
 
-#     print(context.user_data, 'Semester')
     if update.callback_query:
         query = update.callback_query
         text = 'semester'
@@ -208,20 +192,20 @@ def semester_choice(update: Update, context: CallbackContext) -> int:
     if DATA:
         keyboard = [
 
-            [str(DATA[semester]['semes_number']), str(DATA[semester + 1]['semes_number'])] for semester in range(0,len(DATA)-1,2)
+    
+            [str(DATA[semester]['name']), str(DATA[semester + 1]['name'])] for semester in range(0,len(DATA)-1,2)
           
         ]
-        # keyboard += [['Back']]
         reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
         if context.user_data.get(text):
             reply_text = (
-                f'Your {text} is {context.user_data[text]}, wanna change? '
+                f'Your {text} is {SEMES[context.user_data[text]]}, wanna change? '
             )
         else:
             reply_text = f'Enter {text} ,From the below list  {facts_to_str(SEMES)}'
         update.message.reply_text(reply_text, reply_markup = reply_markup)
     else:
-        reply_text = f"Ther is No semester add to The database in this campus"
+        reply_text = f"There is No semester add to The database in this campus"
         update.message.reply_text(reply_text)
 
 
@@ -229,33 +213,42 @@ def semester_choice(update: Update, context: CallbackContext) -> int:
 
 
 def department_choice(update: Update, context: CallbackContext) -> int:
-    """Ask the user for info about the selected predefined choice."""
-#     print(context.user_data, 'Department')
+    global DEPARTMENTDIC, RDEPARTMENTDIC
+    DEPARTMENTDIC = {} 
+    RDEPARTMENTDIC = {}
     text = update.message.text.lower()
-#     print(text, "______text")
     context.user_data['query'] = text
+
     if context.user_data.get('semester'):
         context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.TYPING)
 
+ 
         data = fetcher.get_departments_by_semester(context.user_data['semester'])
+       
+        
         keyboard = [
 
-            [str(data[department]['id']), str(data[department + 1]['id'])] for department in range(0,len(data)-1,2)
+            [str(department['short_name'])] for department in data
           
         ]
-        # keyboard +=[['Home']]
+        for department in data:
+            DEPARTMENTDIC[department['id']] = department['short_name']
+            RDEPARTMENTDIC[department['short_name']] = department['id']
+
         reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
         if context.user_data.get(text):
-            reply_text = f"Your {text} is {context.user_data[text]}, wanna change?"
+            if text == 'semester':
+                reply_text = f"Your {text} is {SEMES[context.user_data[text]]}, wanna change ? "
+            if text == 'department':
+                reply_text = f"Your {text} is {DEPARTMENTDIC[context.user_data[text]]}, wanna change ? "
+
         else:
 
 
             reply_text = f'Enter {text} ,From the below list'
             reply_text += '\n__________________________________________\n\n'
             dept = []
-            # print(data)
             for dep in data:
-                # print(dep)
                 text = ' '
                 text +=  '<strong> School </strong> :  ' + '<em>' + dep['school'] + '</em>' + '\n'
                 text +=  '<strong> Department </strong> :  ' + '<em>' + dep['name'] + '</em>' + '\n'
@@ -274,7 +267,8 @@ def department_choice(update: Update, context: CallbackContext) -> int:
 
 
 def received_information(update: Update, context: CallbackContext) -> int:
-    """Store info provided by user and ask for the next category."""
+
+    text = update.message.text
     def is_number(n):
         is_number = True
         try:
@@ -284,11 +278,16 @@ def received_information(update: Update, context: CallbackContext) -> int:
         except ValueError:
             is_number = False
         return is_number
-#     print(context.user_data, 'Recived Info')
-    text = update.message.text
+    if context.user_data['query'] == 'department':
+        text = RDEPARTMENTDIC[text]
+
+    if context.user_data['query'] == 'semester':
+        text = RSEMES[text]
+
     category = context.user_data['query']
+
     if is_number(text):
-        context.user_data[category] = text.lower()
+        context.user_data[category] = text
     else:
         context.user_data[category] = ''
     del context.user_data['query']
@@ -304,15 +303,24 @@ def received_information(update: Update, context: CallbackContext) -> int:
         markup = markup_one
         r_text = f" <h1 color='blue'> Please Selecte Semester </h1>"
     if not context.user_data.get('semester'):
-        reply_text = f" please Selecte Your Semester First Department {context.user_data.get('semester')} "
+        reply_text = f" please Selecte Your Semester First "
         update.message.reply_text(
             reply_text,
             reply_markup=markup,
             parse_mode = ParseMode.HTML
         )
     else:
+        temp = ' \n '
+        for key, value in context.user_data.items():
+            if key == 'semester':
+                temp += f"{key}  -  {SEMES[value]} \n "
+            elif key == 'department' and category == 'department':
+                temp += f"{key} -  { DEPARTMENTDIC[value] } \n "
+            else:
+                temp = ''
+
         reply_text = f" Sweet! "
-        reply_text += f"{facts_to_str(context.user_data)}"
+        reply_text += temp
         reply_text += r_text
         update.message.reply_text(
                 
@@ -324,10 +332,8 @@ def received_information(update: Update, context: CallbackContext) -> int:
 
 
 def Reset_history(update: Update, context: CallbackContext):
-    """Store info provided by user and ask for the next category."""
-#     print(context.user_data, 'Reset History')
+
     text = update.message.text
-#     print(text)
     clean_data(context.user_data)
     if context.user_data.get('semester') and context.user_data.get('department'):
         markup = markup_three
@@ -346,30 +352,21 @@ def Reset_history(update: Update, context: CallbackContext):
 
 
 def show_history(update: Update, context: CallbackContext) -> None:
-    """Display the gathered info."""
-#     print(context.user_data, 'show_history')
+
     update.message.reply_text(
         f"This is your current : {facts_to_str(context.user_data)}"
     )
 
 
 def find(update: Update, context: CallbackContext) -> int:
-    """Display the gathered info and end the conversation."""
-    # print(context.user_data, 'Find C')
+
     if 'query' in context.user_data:
         del context.user_data['query']
-    # print(context.user_data['semester'])
-    # print('_______________________________')
-    # print(context.user_data['department'])
-    # print('__________update_____________')
-    # print(update)
-    # print('__________update___________end__')
+
     context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.TYPING)
     COURSES = fetcher.get_all_by_sem_and_dep(context.user_data['semester'], context.user_data['department'])
     QUERY['courses'] = COURSES
     if COURSES:
-        # print(COURSES)
-        # print(COURSES[1])
         keyboard = [
 
             [course['course_code']]for course in COURSES
@@ -399,8 +396,6 @@ def find(update: Update, context: CallbackContext) -> int:
 
 
 def show_download_option(update: Update, context: CallbackContext):
-    """Show new choice of buttons"""
-    # print(context.user_data, 'Show Option')
     QUERY['course_code'] = update.message.text
     COURSES = QUERY['courses']
     if COURSES:
@@ -439,7 +434,6 @@ def show_download_option(update: Update, context: CallbackContext):
 
 
 def serve_file(update: Update, context: CallbackContext):
-    # print(context.user_data, 'Serve File')
     query = update.message
     context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.UPLOAD_DOCUMENT)
     data = fetcher.get_course_tg(context.user_data['semester'], context.user_data['department'], QUERY['course_code'])
@@ -449,7 +443,6 @@ def serve_file(update: Update, context: CallbackContext):
         files = []
         for i,j in data.items():
             files = j['files'][query.text]
-#             print(j)
         MSG = f"<strong> {j['course_name']} </strong> \n"
         MSG += '\n__________________________________________\n\n'
         MSG += "<strong> course_name </strong>: " + f"{j['course_name']} \n"
@@ -460,19 +453,97 @@ def serve_file(update: Update, context: CallbackContext):
         MSG += "<strong> file format </strong>: " + f"{j['ava' ]} "
         query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
         for file in files:
-            # print(file, "_____T____")
-            # context.bot.send_message(user.id, file)
-            # context.bot.send_document(user.id, file)
-            file_id = file.split('N')[0]
-            file_from = file.split('N')[-1]
-            context.bot.copy_message(chat_id=update.effective_message.chat_id,
-                    from_chat_id=file_from,
-                    message_id=file_id)
+            file_id = file
+            context.bot.send_document(file_id, update.effective_message.chat_id,)
        
         reply_text = f"Lots of Thank 🙏 for choosing us  {user.first_name}! "
         query.from_user.send_message(reply_text)
         # context.bot.send_message(user.id, reply_text)
         return SERVE
+    else:
+        MSG = f"Invalid Course code: {query.text} \n make sure that all characters are correct"
+        reply_text = MSG
+       
+        update.message.reply_text(text= reply_text)
+        return ConversationHandler.END
+
+
+
+def fast_show_download_option(update: Update, context: CallbackContext):
+    """Show new choice of buttons"""
+    # print(context.user_data, 'Show Option')
+    global FASTSEMESTER, FASTDEPARTMENT
+    query = update.message
+    QUERY['course_code'] = query.text
+    try:
+        data = fetcher.get_fast(query.text)
+        COURSES = data
+    except:
+        pass
+    if COURSES:
+
+        reply_text = f" Course {QUERY['course_code']} "
+        reply_text += '\n__________________________________________\n'
+        for item in COURSES:
+            if COURSES[item]['course_code'] == QUERY['course_code']:
+                course = COURSES[item] 
+
+        available_formats = course['ava']  
+        txt = ''
+        for k,v in available_formats.items():
+            txt += f"{k} - {v} | "
+        reply_text += '\n\n course_name : ' + course['course_name']
+        reply_text += '\n course_code : ' + course['course_code']
+        reply_text += '\n course_description : ' + course['course_description']
+        reply_text += f"\n available in : " + txt
+        reply_text += f"\n ___________{course['course_code']}__________"
+            
+        QUERY['FASTSEMESTER'] = course['semester']
+        QUERY['FASTDEPARTMENT'] = course['department']['id']
+        keyboard = [
+
+            [str(av) for av in available_formats],
+            ['Back'],
+       
+
+        ]
+
+        reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")   
+        update.message.reply_text(text= reply_text, reply_markup = reply_markup)
+        return FASTSERVE
+    else:
+        update.message.reply_text(text=f"Invalid Course code: {query.text} \n make sure that all characters are correct",)
+        return ConversationHandler.END
+
+
+def fast_serve_file(update: Update, context: CallbackContext):
+    # print(context.user_data, 'Serve File')
+    query = update.message
+    context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.UPLOAD_DOCUMENT)
+    data = fetcher.get_course_tg(QUERY['FASTSEMESTER'], QUERY['FASTDEPARTMENT'], QUERY['course_code'])
+    user = update.message.from_user
+    MSG = 'Sending requested files ' + user.first_name
+    if data:
+        files = []
+        for i,j in data.items():
+            files = j['files'][query.text]
+        MSG = f"<strong> {j['course_name']} </strong> \n"
+        MSG += '\n__________________________________________\n\n'
+        MSG += "<strong> course_name </strong>: " + f"{j['course_name']} \n"
+        MSG += "<strong> course_description </strong>: " + f"{j['course_description']} \n"
+        MSG += "<strong> semester </strong>: " + f"{j['semester']} \n"
+        MSG += "<strong> department </strong>: " + f"{j['department']['name']} \n"
+        MSG += "<strong> contributor </strong>: " + f"{j['created_by']} \n"
+        MSG += "<strong> file format </strong>: " + f"{j['ava' ]} "
+        query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
+        for file in files:
+            file_id = file
+            context.bot.send_document(file_id, update.effective_message.chat_id,)
+       
+        reply_text = f"Lots of Thank 🙏 for choosing us  {user.first_name}! "
+        query.from_user.send_message(reply_text)
+        # context.bot.send_message(user.id, reply_text)
+        return FASTSERVE
     else:
         MSG = f"Invalid Course code: {query.text} \n make sure that all characters are correct"
         reply_text = MSG
@@ -531,13 +602,11 @@ def share(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
 
 def school(update: Update, context: CallbackContext) -> int:
-    """Show new choice of buttons"""
+
     query = update.callback_query
     global QUERY
     QUERY['semester'] = query.data
-    # print('__________DICT__________School__')
-    # print(QUERY)
-    # print('__________END____________')
+
     
     SEMESTERS = [semester for semester in DATA if semester['semes_number'] == int(query.data)]
     if SEMESTERS:
@@ -559,19 +628,16 @@ def school(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
 
 def department(update: Update, context: CallbackContext) -> int:
-    """Show new choice of buttons"""
+
     query = update.callback_query
     global QUERY
     QUERY['school'] = query.data
-    # print('__________DICT__________Depart__')
-    # print(QUERY)
-    # print('__________END____________')
+
     
     SEMESTERS = [semester for semester in DATA if semester['semes_number'] == int(QUERY['semester'])]
  
     for semester in SEMESTERS:
         SCHOOLS = semester['school_in_this_semes']
-    # DEPARTMENTS = [school for school in SCHOOLS if school['id'] == int(QUERY['school'])]
     for school in SCHOOLS:
         if school['id'] == int(QUERY['school']):
             DEPARTMENTS = school['department'] 
@@ -592,14 +658,11 @@ def department(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
 
 def courses(update: Update, context: CallbackContext) -> int:
-    """Show new choice of buttons"""
+
     query = update.callback_query
     global QUERY
     QUERY['department'] = query.data
-    # print('__________DICT_________Courses__')
-    # print(QUERY)
-    # print('__________END____________')
-    
+
     COURSES = fetcher.get_all_by_sem_and_dep(QUERY['semester'], QUERY['department'])
     QUERY['course'] = COURSES
     if COURSES:
@@ -625,7 +688,7 @@ def courses(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
 
 def show_option(update: Update, context: CallbackContext) -> int:
-    """Show new choice of buttons"""
+
     query = update.callback_query
     global QUERY
     QUERY['course_code'] = query.data
@@ -656,23 +719,20 @@ def show_option(update: Update, context: CallbackContext) -> int:
  
 
         keyboard = [
-        # [InlineKeyboardButton(av, callback_data=str(av)) for av in available_formats],
-        [
-        InlineKeyboardButton('PPT', callback_data='PPT'),
-        InlineKeyboardButton('PDF', callback_data='PDF'), 
-        InlineKeyboardButton('Book', callback_data='Book'),
-        ],
-        [
-        InlineKeyboardButton("Back", callback_data=str(START)),
-        ],
+            [
+                InlineKeyboardButton('PPT', callback_data='PPT'),
+                InlineKeyboardButton('PDF', callback_data='PDF'), 
+                InlineKeyboardButton('Book', callback_data='Book'),
+            ],
+            [
+              InlineKeyboardButton("Back", callback_data=str(START)),
+            ],
 
         ]
 
         reply_markup = InlineKeyboardMarkup(keyboard)    
         query.edit_message_text(text= reply_text, reply_markup = reply_markup)
-        # print('QUERY_______________________________________start')
-        # print(QUERY)
-        # print('QUERY_______________________________________END')
+
         return SERVE
     else:
         query.from_user.send_message(text="Invalid Data | 404",)
@@ -685,14 +745,8 @@ def recive_file(update: Update, context: CallbackContext) -> int:
     MSG = 'ready to grab files Mr/Mss' + user.first_name
     query.answer(MSG)
 
-    # print('__________DICT_________Option__')
-    # print(QUERY)
-    # print('__________END____________')
     if data:
-        # files = []
-        # for i,j in data.items():
-        #     print(j, j['files'], 'BOOOOOOOOOOOOOOOOOOOOO_M_______')
-        #     files = j['files'][query.data]
+
         COURSES = QUERY['course']
         if COURSES:
             
@@ -712,7 +766,6 @@ def recive_file(update: Update, context: CallbackContext) -> int:
             reply_text += f"\n available in : " + txt
             reply_text += f"\n ___________{course['course_code']}__________"
             reply_text += f"\n Fantastic Now Send Files Releted to This 👆 Course  - ! "
-            # query.from_user.send_message(reply_text)
             query.edit_message_text(text = reply_text)
             return RECIVE
     else:
@@ -741,7 +794,6 @@ def ppt_manager(update: Update, context: CallbackContext):
         for item in COURSES:
             if item['course_code'] == QUERY['course_code']:
                 course = item
-                # print(course, 'CO---')
 
         available_formats = course['available']  
         txt = ''
@@ -759,8 +811,8 @@ def ppt_manager(update: Update, context: CallbackContext):
     typ = 'ppt'
     file_obj = {
             "cm": course['course_id'],
-            "tg_file_id": str(msg_id) + 'N' + str(update.effective_message.chat_id),
-            "tg_file_url": file_id,
+            "tg_file_id": str(file_id),
+            "tg_file_url": str(msg_id) + 'N' + str(update.effective_message.chat_id),
             "title": file_caption if file_caption else ""
 
         }
@@ -791,7 +843,6 @@ def pdf_manager(update: Update, context: CallbackContext):
         for item in COURSES:
             if item['course_code'] == QUERY['course_code']:
                 course = item
-                # print(course, 'CO---')
 
         available_formats = course['available']  
         txt = ''
@@ -800,7 +851,6 @@ def pdf_manager(update: Update, context: CallbackContext):
         caption_text += '\n\n course_name : ' + course['course_name']
         caption_text += '\n course_code : ' + course['course_code']
         caption_text += '\n course_description : ' + course['course_description']
-        # caption_text += f"\n available in : " + txt
         caption_text += f"\n ___________{course['course_code']}__________"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
@@ -809,8 +859,8 @@ def pdf_manager(update: Update, context: CallbackContext):
     typ = 'pdf'
     file_obj = {
             "cm": course['course_id'],
-            "tg_file_id": str(msg_id) + 'N' + str(update.effective_message.chat_id),
-            "tg_file_url": file_id,
+            "tg_file_id": str(file_id),
+            "tg_file_url": str(msg_id) + 'N' + str(update.effective_message.chat_id),
             "title": file_caption if file_caption else ""
 
         }
@@ -827,7 +877,6 @@ def pdf_manager(update: Update, context: CallbackContext):
     
     reply_text = f"{course['course_name']} PDF File recived 📚. Thaks {update.message.from_user.first_name} !"
     QUERY['done_msg'] = reply_text
-    # reply_text = 'is that all you got ??! Press Done, otherwise keep senading 🖖 '
     update.message.reply_text(text ='reading ...' , reply_markup = reply_markup)
     return RECIVE
 
@@ -849,7 +898,6 @@ def how_to(update: Update, context: CallbackContext):
 
 
 def customer_service_information(update: Update, context: CallbackContext) -> int:
-    """Store info provided by user and ask for the next category."""
     text = update.message.text
     user = update.message.from_user
     MSG = f"Feedback from [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot"
@@ -865,16 +913,13 @@ def customer_service_information(update: Update, context: CallbackContext) -> in
    
 
 def end(update: Update, context: CallbackContext) -> int:
-    """Returns `ConversationHandler.END`, which tells the
-    ConversationHandler that the conversation is over.
-    """
     query = update.callback_query
     query.answer()
     query.edit_message_text(text="See you next time!")
     return ConversationHandler.END
 
 def help_command(update: Update, context: CallbackContext) -> None:
-    """Displays info on how to use the bot."""
+
     update.message.reply_text(
         "Use /start to use this bot. Use "
     )
@@ -882,7 +927,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 def main() -> None:
     """Run the bot."""
     # Create the Updater and pass it your bot's token.
-    persistence = PicklePersistence(filename='conversationbot')
+    persistence = PicklePersistence(filename='my_astu_enlghten_bot')
     updater = Updater(token = TOKEN, persistence = persistence)
 
     # Get the dispatcher to register handlers
@@ -891,8 +936,8 @@ def main() -> None:
     # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
     
 
-    download_handeler = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('^Download$'), download)],
+    fast_download_handeler = ConversationHandler(
+        entry_points=[MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),],
         states={
      
             CUTOMER_SERVICE: [
@@ -902,8 +947,47 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Home 🛖$'), start_over),
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
+
+            FASTSERVE: [
+                MessageHandler(Filters.regex('^Back$'), download),
+                MessageHandler(Filters.regex(pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'), fast_serve_file),
+                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
+                MessageHandler(Filters.regex('^Feed Back$'), feed_back),
+                MessageHandler(Filters.regex('^How To$'), how_to),
+                MessageHandler(Filters.regex('^Download$'), download),
+              
+            ],
+            
+            
+        },
+        fallbacks=[
+            MessageHandler(Filters.regex('^Back$'), download),
+            MessageHandler(Filters.regex('^Home 🛖$'), start_over),
+            MessageHandler(Filters.regex('^Feed Back$'), feed_back),
+            MessageHandler(Filters.regex('^How To$'), how_to),
+            MessageHandler(Filters.regex('^Download$'), download),
+
+        ],
+        name="my_astu_enlghten_fast_download",
+        persistent=True,
+    )
+
+    download_handeler = ConversationHandler(
+        entry_points=[MessageHandler(Filters.regex('^Download$'), download)],
+        states={
+     
+            CUTOMER_SERVICE: [
+                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+                MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),customer_service_information),
+                MessageHandler(Filters.regex('^Reset$'), Reset_history),
+                MessageHandler(Filters.regex('^Back$'), download),
+                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
+                MessageHandler(Filters.regex('^Download$'), download),
+            ],
             CHOOSING: [
-                MessageHandler(Filters.regex('^(Semester)$'), semester_choice),
+                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+                MessageHandler(Filters.regex('^Semester$'), semester_choice),
                 MessageHandler(Filters.regex('^Department$'), department_choice),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -913,6 +997,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
             TYPING_CHOICE: [
+                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')), semester_choice),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -922,6 +1007,7 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
             TYPING_REPLY: [
+                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),received_information),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -948,9 +1034,9 @@ def main() -> None:
         name="my_astu_enlghten_download",
         persistent=True,
     )
-    
+
     upload_handler = ConversationHandler(
-        entry_points=[CommandHandler('share', share)],
+        entry_points=[MessageHandler(Filters.regex('^Share$'), share),],
         states={
 
             SEMESTER: [
@@ -989,7 +1075,7 @@ def main() -> None:
 
             
         },
-        fallbacks=[CommandHandler('share', share)],
+        fallbacks=[MessageHandler(Filters.regex('^Share$'), share),],
         name = 'my_astu_enlghten_upload',
         persistent=True,
     )
@@ -997,8 +1083,9 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("help", help_command))
     # dispatcher.add_handler(MessageHandler(Filters.regex('^Feed Back$'), feed_back))
-    dispatcher.add_handler(upload_handler)
+    dispatcher.add_handler(fast_download_handeler)
     dispatcher.add_handler(download_handeler)
+    dispatcher.add_handler(upload_handler)
     # dispatcher.add_handler(share_handeler)
 
     show_history_handler = CommandHandler('show_history', show_history)
