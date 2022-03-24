@@ -936,22 +936,50 @@ def main() -> None:
     # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
     
 
+
     fast_download_handeler = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),],
+        entry_points=[
+                        MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.regex('^Semester$') |
+                                   Filters.regex('^Department$') |
+                                   Filters.regex('^Reset$') |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') |
+                                   Filters.regex('^Download$') 
+                                ), 
+
+
+                            fast_show_download_option),
+
+
+                        ],
         states={
      
-            CUTOMER_SERVICE: [
-                MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),customer_service_information),
-                MessageHandler(Filters.regex('^Reset$'), Reset_history),
-                MessageHandler(Filters.regex('^Back$'), download),
-                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-                MessageHandler(Filters.regex('^Download$'), download),
-            ],
 
             FASTSERVE: [
                 MessageHandler(Filters.regex('^Back$'), download),
                 MessageHandler(Filters.regex(pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'), fast_serve_file),
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+                MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.regex('^Semester$') |
+                                   Filters.regex('^Department$') |
+                                   Filters.regex('^Reset$') |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') |
+                                   Filters.regex('^Download$') 
+                                ), 
+
+
+                            fast_show_download_option),
                 MessageHandler(Filters.regex('^Home 🛖$'), start_over),
                 MessageHandler(Filters.regex('^Feed Back$'), feed_back),
                 MessageHandler(Filters.regex('^How To$'), how_to),
@@ -978,7 +1006,22 @@ def main() -> None:
         states={
      
             CUTOMER_SERVICE: [
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+                MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.regex('^Semester$') |
+                                   Filters.regex('^Department$') |
+                                   Filters.regex('^Reset$') |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') |
+                                   Filters.regex('^Download$') 
+                                ), 
+
+
+                            fast_show_download_option),
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),customer_service_information),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -986,7 +1029,22 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
             CHOOSING: [
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+                MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.regex('^Semester$') |
+                                   Filters.regex('^Department$') |
+                                   Filters.regex('^Reset$') |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') |
+                                   Filters.regex('^Download$') 
+                                ), 
+
+
+                            fast_show_download_option),
                 MessageHandler(Filters.regex('^Semester$'), semester_choice),
                 MessageHandler(Filters.regex('^Department$'), department_choice),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
@@ -997,7 +1055,22 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
             TYPING_CHOICE: [
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+                MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.regex('^Semester$') |
+                                   Filters.regex('^Department$') |
+                                   Filters.regex('^Reset$') |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') |
+                                   Filters.regex('^Download$') 
+                                ), 
+
+
+                            fast_show_download_option),
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')), semester_choice),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -1007,7 +1080,22 @@ def main() -> None:
                 MessageHandler(Filters.regex('^Download$'), download),
             ],
             TYPING_REPLY: [
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), fast_show_download_option),
+                MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.regex('^Semester$') |
+                                   Filters.regex('^Department$') |
+                                   Filters.regex('^Reset$') |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') |
+                                   Filters.regex('^Download$') 
+                                ), 
+
+
+                            fast_show_download_option),
                 MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),received_information),
                 MessageHandler(Filters.regex('^Reset$'), Reset_history),
                 MessageHandler(Filters.regex('^Back$'), download),
@@ -1029,7 +1117,23 @@ def main() -> None:
             
             
         },
-        fallbacks=[MessageHandler(Filters.regex('^Find$'), find),
+        fallbacks=[
+                    MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.regex('^Semester$') |
+                                   Filters.regex('^Department$') |
+                                   Filters.regex('^Reset$') |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') |
+                                   Filters.regex('^Download$') 
+                                ), 
+
+
+                            fast_show_download_option),
         ],
         name="my_astu_enlghten_download",
         persistent=True,
@@ -1075,10 +1179,29 @@ def main() -> None:
 
             
         },
-        fallbacks=[MessageHandler(Filters.regex('^Share$'), share),],
+        fallbacks=[
+                    MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.regex('^Semester$') |
+                                   Filters.regex('^Department$') |
+                                   Filters.regex('^Reset$') |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') |
+                                   Filters.regex('^Download$') 
+                                ), 
+
+
+                            fast_show_download_option),
+
+        ],
         name = 'my_astu_enlghten_upload',
         persistent=True,
     )
+
 
 
     dispatcher.add_handler(CommandHandler("help", help_command))
