@@ -301,13 +301,30 @@ def fast_serve_file(update: Update, context: CallbackContext):
 
 """ --Upload Sction-- """
 
-CAMPUS = 'ASTU'
-DATA = fetcher.get_semesters(CAMPUS)
-SEMESTERS = {}
-SCHOOLS = []
-COURSES = []
-def share(update: Update, context: CallbackContext) -> int:
+def upload(update: Update, context: CallbackContext) -> int:
+    """Show new choice of buttons"""
+    CAMPUS = 'ASTU'
+    DATA = fetcher.get_semesters(CAMPUS)
+    SEMESTERS = {}
+    SCHOOLS = []
+    COURSES = []
+    QUERY = {}
+    query = update.message
+    # query.answer("✨ commingsoon ✨")
+    keyboard = [
+        [
+            InlineKeyboardButton("Continue", callback_data=str(SHARE)),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+   
+    query.reply_text(
+        text=" Press Continue to proceed ", reply_markup=reply_markup
+    )
+    return ConversationHandler.END
 
+def share(update: Update, context: CallbackContext) -> int:
+    query = update.callback_query
     if DATA:
         
         global QUERY
@@ -318,9 +335,9 @@ def share(update: Update, context: CallbackContext) -> int:
           
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        update.message.reply_text(
-            text="Choose your semester ", reply_markup=reply_markup
-        )
+
+        query.edit_message_text(text="Choose your semester ", reply_markup=reply_markup)
+       
         return SEMESTER
     else:
         update.message.from_user.send_message(text="Invalid Data | 404\n use /start re initiate",)
@@ -695,7 +712,7 @@ def main() -> None:
             
         },
         fallbacks=[
-            CommandHandler('share', share),
+            CommandHandler('share', upload),
         ],
         name="my_astu_enlghten_fast_download",
         persistent=True,
@@ -704,7 +721,7 @@ def main() -> None:
 
 
     upload_handler = ConversationHandler(
-        entry_points=[CommandHandler('share', share),],
+        entry_points=[CallbackQueryHandler(share, pattern='^' + str(SHARE) + '$'),],
         states={
 
             SEMESTER: [
