@@ -270,7 +270,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
     if data:
         files = []
         for key,value in data.items():
-            files = value['files'][query.data]
+            files = value['files'][query.data.split('N')[0]]
         MSG = f"<strong> {value['course_name']} </strong> \n"
         MSG += '\n__________________________________________\n\n'
         MSG += "<strong> course_name </strong>: " + f"{value['course_name']} \n"
