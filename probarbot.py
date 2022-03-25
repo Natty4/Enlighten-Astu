@@ -692,6 +692,7 @@ def main() -> None:
                         CommandHandler('share', share),
                         MessageHandler(Filters.regex('^Feed Back$'), feed_back),
                         MessageHandler(Filters.regex('^How To$'), how_to),
+                        MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Feed Back$') | Filters.regex('^How To$')),customer_service_information),
 
             ],
             
