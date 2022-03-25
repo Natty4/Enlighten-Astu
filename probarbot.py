@@ -675,7 +675,7 @@ def main() -> None:
                             Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
                                 ) & ~(
 
-
+                                   Filters.command |
                                    Filters.regex('^Back$') |
                                    Filters.regex('^Home 🛖$') |
                                    Filters.regex('^Feed Back$') |
@@ -686,8 +686,8 @@ def main() -> None:
 
                             fast_show_download_option),
                         CommandHandler('start', start),
-                        MessageHandler(Filters.regex('^Feed Back$'), feed_back),
-                        MessageHandler(Filters.regex('^How To$'), how_to),
+                        MessageHandler(Filters.regex('^Feed Back$') & (~ Filters.command), feed_back),
+                        MessageHandler(Filters.regex('^How To$') & (~ Filters.command), how_to),
                         MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Feed Back$') | Filters.regex('^How To$')),customer_service_information),
 
             ],
