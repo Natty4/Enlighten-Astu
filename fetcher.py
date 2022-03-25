@@ -1,3 +1,10 @@
+"""
+Enlighten-ASTU E-Library
+API Fetcher
+By: Natnael (MrPGuy)
+
+"""
+
 import requests
 
 
@@ -6,11 +13,6 @@ baseUrl = 'https://enlightenapi.herokuapp.com'
 
 def recored_new_user(obj):
 
-	# obj = {
-	#     "username": "lol",
-	#     "first_name": "Lol",
-	#     "last_name": "LoL"
-	# }
 	url = f'{baseUrl}/api/tguser'
 	data = obj
 	respons = requests.post(url, data = data)
@@ -18,16 +20,26 @@ def recored_new_user(obj):
 
 def upload_file(obj, typ):
 	url = f'{baseUrl}/api/{typ}'
-	# obj = {
-	#     "cm":cm,
-	#     "tg_file_id": "2020",
-	#     "tg_file_url": "url/from/tg/somthing",
-	#     "title": ""
-
-	# }
 	data = obj
 	respons = requests.post(url, data = data)
 	return respons
+
+def get_courses():
+	url = f"{baseUrl}/api/cms"
+	resp = requests.get(url)
+	if resp.status_code == 404:
+		return False
+	data = resp.json()["CourseMaterial-Info"]
+	courses = data
+	return courses
+
+def get_courses_of(data, semester):
+	Data = data
+	courses = {}
+	for course in Data:
+		if str(course['semester']) == str(semester):
+			courses[course['course_code']] = course
+	return courses
 
 def get_semesters(campus):
 	url = f'{baseUrl}/api/{campus}/semesters'
@@ -46,6 +58,7 @@ def get_semesters(campus):
 		respons.append(semester)
 
 	return respons
+
 def get_departments(dep):
 	url = f'{baseUrl}/api/{dep}'
 	data = requests.get(url)
@@ -61,6 +74,7 @@ def get_departments(dep):
 
 		respons.append(department)
 	return respons
+
 def get_departments_by_semester(sem):
 	url = f'{baseUrl}/api/semesters/{sem}'
 	data = requests.get(url)
@@ -78,6 +92,7 @@ def get_departments_by_semester(sem):
 			departments['school'] = school['name']
 			respons.append(departments)
 	return respons
+	
 def get_all_by_sem_and_dep(sem, dep):
 	url = f'{baseUrl}/api/cms/{sem}/{dep}'
 	data = requests.get(url)
@@ -107,44 +122,9 @@ def get_all_by_sem_and_dep(sem, dep):
 
 	return respons
 
-# def get_course(sem, dep, ccode):
-# 	url = f'{baseUrl}/api/cms/{sem}/{dep}/{ccode}'
-# 	print(url)
-# 	data = requests.get(url)
-# 	# print(data)
-# 	if data.status_code == 404:
-# 		return False
-# 	resp = data.json()['CourseMaterial-Info']
-# 	respons = {}
-# 	ava = data.json()['available File Format']
-# 	aval = {}
-# 	path = {}
-# 	for a in ava:
-# 	    aval[a]=len(resp[a.lower() + 's'])
-
-# 	for i in aval:
-# 		url = []
-# 		j = resp[i.lower() + 's']
-# 		for file in j:
-# 			url.append(baseUrl + file[i.lower()])
-# 		path[i] = url
-# 	course = {}
-# 	course['course_name'] = resp['course_name']
-# 	course['course_code'] = resp['course_code']
-# 	course['course_description'] = resp['course_description']
-# 	course['semester'] = resp['semester']
-# 	course['department'] = resp['department']
-# 	course['created_by'] = resp['created_by']
-# 	course['ava'] = aval
-# 	course['files'] = path
-# 	respons[resp['course_name']] = course
-
-# 	# print(respons)
-# 	return respons
-
-def get_course_tg(sem, dep, ccode):
-	url = f'{baseUrl}/api/cms/{sem}/{dep}/{ccode}'
-# 	print(url)
+def get_course_tg(ccode):
+	url = f'{baseUrl}/api/cms/{ccode}'
+	# print(url)
 	data = requests.get(url)
 	# print(data)
 	if data.status_code == 404:
@@ -162,7 +142,7 @@ def get_course_tg(sem, dep, ccode):
 		j = resp[i.lower() + 's']
 		for file in j:
 			# url.append(baseUrl + file[i.lower()])
-# 			print(file, "File__________")
+			# print(file, "File__________")
 			fid.append(file['tg_file_id'])
 
 		path[i] = fid
@@ -182,7 +162,7 @@ def get_course_tg(sem, dep, ccode):
 
 def get_fast(ccode):
 	url = f'{baseUrl}/api/cms/{ccode}'
-# 	print(url)
+	print(url)
 	data = requests.get(url)
 	if data.status_code == 404:
 		return False
@@ -195,12 +175,16 @@ def get_fast(ccode):
 		path = {}
 		for a in ava:
 		    aval[a]=len(resp[a.lower() + 's'])
+		
 		for i in aval:
-			url = []
+			fid = []
 			j = resp[i.lower() + 's']
 			for file in j:
-				url.append(baseUrl + file[i.lower()])
-			path[i] = url
+				# url.append(baseUrl + file[i.lower()])
+				# print(file, "File__________")
+				fid.append(file['tg_file_id'])
+
+			path[i] = fid
 		course = {}
 		course['course_name'] = resp['course_name']
 		course['course_code'] = resp['course_code']
@@ -212,5 +196,5 @@ def get_fast(ccode):
 		course['files'] = path
 		respons[resp['course_name']] = course
 
-		# print(respons)
+		# print(respons, "_____________________")
 		return respons
