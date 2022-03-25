@@ -743,7 +743,22 @@ def main() -> None:
             
         },
         fallbacks=[
-            CommandHandler('start', start),       
+            CommandHandler('start', start),
+            CommandHandler('list', show_course),
+            MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+                                   Filters.command |
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') 
+
+                                ), 
+
+
+                            fast_show_download_option),
 
         ],
         name = 'my_astu_enlghten_upload',
