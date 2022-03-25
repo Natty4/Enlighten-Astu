@@ -226,9 +226,9 @@ def fast_show_download_option(update: Update, context: CallbackContext):
     query = update.message
     QUERY['course_code'] = query.text.upper()
     print(query.text, 'fast_show_download_option-----')
-    try:
-        data = fetcher.get_fast(query.text.upper())
-        courses = data
+    data = fetcher.get_fast(query.text.upper())
+    courses = data
+    if courses:
         reply_text = f" Course {QUERY['course_code']} "
         reply_text += '\n__________________________________________\n'
         for item in courses:
@@ -255,7 +255,7 @@ def fast_show_download_option(update: Update, context: CallbackContext):
 
         update.message.reply_text(text= reply_text, reply_markup = reply_markup)
         return FASTSERVE
-    except Exception as e:
+    else :
         update.message.reply_text(text=f"Invalid Course code: {query.text} \n make sure that all characters are correct",)
         print(e, 'exc______________')
         return FASTSERVE
