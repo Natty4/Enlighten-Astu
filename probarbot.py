@@ -245,7 +245,7 @@ def fast_show_download_option(update: Update, context: CallbackContext):
             
 
         keyboard = [
-            [InlineKeyboardButton(f'{av} ⬇️', callback_data=av)] for av in available_formats
+            [InlineKeyboardButton(f'{av} ⬇️', callback_data=av + 'N' + course['course_code'] )] for av in available_formats
        
         ]
 
@@ -263,7 +263,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
     # print(context.user_data, 'Serve File')
     query = update.callback_query
     context.bot.sendChatAction(chat_id=query.from_user.id ,action = ChatAction.UPLOAD_DOCUMENT)
-    data = fetcher.get_course_tg(QUERY['course_code'])
+    data = fetcher.get_course_tg(query.data.split('N')[-1])
     user = query.from_user
     MSG = 'Sending requested files ' + user.first_name
 
