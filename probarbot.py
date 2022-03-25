@@ -34,7 +34,7 @@ QUERY = {}
 SEMES = { '1': 'Freshman 1st', '2': 'Freshman 2nd', '3': 'Sophomore 1st', '4': 'Sophomore 2nd', '5': 'Junior 1st', '6': 'Junior 2nd', '7': 'Senior 1st', '8': 'Senior 2nd', '9': 'GC 1st', '10': 'GC 2nd'}
 RSEMES = { 'Freshman 1st': '1',  'Freshman 2nd': '2',  'Sophomore 1st': '3',  'Sophomore 2nd': '4',  'Junior 1st': '5',  'Junior 2nd': '6',  'Senior 1st': '7',  'Senior 2nd': '8',  'GC 1st': '9',  'GC 2nd': '10'}
 CAMPUS = 'ASTU'
-DATA = fetcher.get_semesters(CAMPUS)
+# DATA = fetcher.get_semesters(CAMPUS)
 SEMESTERS = {}
 SCHOOLS = []
 NCLOUDX = os.environ.get("NCLOUDX")
@@ -44,33 +44,13 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 
 reply_keyboard_0 = [
-    ['Download', 'Share'],
+
     ['Feed Back', 'How To'],
 ]
-reply_keyboard_1 = [
-    ['Semester'],
-    ['Reset'],
-    ['Home 🛖'],
-]
 
-reply_keyboard_2 = [
-    ['Semester', 'Department'],
-    ['Reset'],
-    ['Home 🛖'],
-]
-
-reply_keyboard_3 = [
-    ['Semester', 'Department'],
-    ['Find'],
-    ['Reset'],
-    ['Home 🛖'],
-]
 
 
 markup_zero = ReplyKeyboardMarkup(reply_keyboard_0, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
-markup_one = ReplyKeyboardMarkup(reply_keyboard_1, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
-markup_two = ReplyKeyboardMarkup(reply_keyboard_2, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
-markup_three = ReplyKeyboardMarkup(reply_keyboard_3, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
 
 def space(n):
     s = ' '
@@ -122,13 +102,14 @@ def start(update: Update, context: CallbackContext) -> int:
         )
     else:
         reply_text += (
-            f"To Enlighten us too, knowldge shelf. you can specify your semester and department to see what courses are there in your department . "
-            " and then you can download any availabel course materials in your department easly "
-            f" or you can share what you have !"
+            f"To Enlighten us too, knowldge shelf. "
+            f" you can download any availabel course materials in your department easly by senading course_code "
+            f" or you can see availabel courses list by useing /list command ! \n\n"
+            f" any question | Feedback, use the below buttons "
         )
   
     update.message.reply_text(text=reply_text, reply_markup=markup_zero)
-    
+    return FASTSERVE
 
 def start_over(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
@@ -157,336 +138,102 @@ def start_over(update: Update, context: CallbackContext) -> int:
 
     if query:
         query.from_user.send_message(text = reply_text, reply_markup = markup_zero)
+        return FASTSERVE
     else:
         update.message.reply_text(text=reply_text, reply_markup=markup_zero)
-
-
-def download(update: Update, context: CallbackContext) -> int:
-    user = update.message.from_user
-
-    reply_text = f"📖📚📒📕📙📘📗📚📖\n"
-    reply_text += f"Hi! {user.first_name} Welcom "
-    if context.user_data:
-        reply_text += (
-            f"Again To Enlighten us too, knowldge shelf. You already told me your {', '.join(context.user_data.keys())}. "
-            f"<em>change anything you already set. </em>"
-        )
-    else:
-        reply_text += (
-            f"To Enlighten us too, knowldge shelf. you can specify your semester and department to see what courses are there in your department . "
-            "and then you can download any availabel course materials in your department easly "
-        )
-    update.message.reply_text(reply_text, reply_markup=markup_one, parse_mode=ParseMode.HTML)
-
-    return CHOOSING
-
-
-def semester_choice(update: Update, context: CallbackContext) -> int:
-
-    if update.callback_query:
-        query = update.callback_query
-        text = 'semester'
-    else:
-        text = update.message.text.lower()
-    context.user_data['query'] = text
-    if DATA:
-        keyboard = [
-
-    
-            [str(DATA[semester]['name']), str(DATA[semester + 1]['name'])] for semester in range(0,len(DATA)-1,2)
-          
-        ]
-        reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
-        if context.user_data.get(text):
-            reply_text = (
-                f'Your {text} is {SEMES[context.user_data[text]]}, wanna change? '
-            )
-        else:
-            reply_text = f'Enter {text} ,From the below list  {facts_to_str(SEMES)}'
-        update.message.reply_text(reply_text, reply_markup = reply_markup)
-    else:
-        reply_text = f"There is No semester add to The database in this campus"
-        update.message.reply_text(reply_text)
-
-
-    return TYPING_REPLY
-
-
-def department_choice(update: Update, context: CallbackContext) -> int:
-    global DEPARTMENTDIC, RDEPARTMENTDIC
-    DEPARTMENTDIC = {} 
-    RDEPARTMENTDIC = {}
-    text = update.message.text.lower()
-    context.user_data['query'] = text
-
-    if context.user_data.get('semester'):
-        context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.TYPING)
-
- 
-        data = fetcher.get_departments_by_semester(context.user_data['semester'])
-       
-        
-        keyboard = [
-
-            [str(department['short_name'])] for department in data
-          
-        ]
-        for department in data:
-            DEPARTMENTDIC[department['id']] = department['short_name']
-            RDEPARTMENTDIC[department['short_name']] = department['id']
-
-        reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
-        if context.user_data.get(text):
-            if text == 'semester':
-                reply_text = f"Your {text} is {SEMES[context.user_data[text]]}, wanna change ? "
-            if text == 'department':
-                reply_text = f"Your {text} is {DEPARTMENTDIC[context.user_data[text]]}, wanna change ? "
-
-        else:
-
-
-            reply_text = f'Enter {text} ,From the below list'
-            reply_text += '\n__________________________________________\n\n'
-            dept = []
-            for dep in data:
-                text = ' '
-                text +=  '<strong> School </strong> :  ' + '<em>' + dep['school'] + '</em>' + '\n'
-                text +=  '<strong> Department </strong> :  ' + '<em>' + dep['name'] + '</em>' + '\n'
-                text +=  '<strong> ShortName </strong>:  ' + '<em>' + dep['short_name'] + '</em>' + '\n'
-                text +=  '<strong> Button </strong> :  ' + '<em>' + str(dep['id']) + '</em>' + '\n'
-                dept.append(text)
-                
-              
-            reply_text += '\n'.join(dept)
-        update.message.reply_text(reply_text, reply_markup = reply_markup, parse_mode = ParseMode.HTML)
-        return TYPING_REPLY
-    else:
-        update.message.reply_text(f"please Selecte wich semister you  want first")
-        return TYPING_REPLY
-    return TYPING_REPLY
-
-
-def received_information(update: Update, context: CallbackContext) -> int:
-
-    text = update.message.text
-    def is_number(n):
-        is_number = True
-        try:
-            num = float(n)
-            # check for "nan" floats
-            is_numberr = num == num   # or use `math.isnan(num)`
-        except ValueError:
-            is_number = False
-        return is_number
-    if context.user_data['query'] == 'department':
-        text = RDEPARTMENTDIC[text]
-
-    if context.user_data['query'] == 'semester':
-        text = RSEMES[text]
-
-    category = context.user_data['query']
-
-    if is_number(text):
-        context.user_data[category] = text
-    else:
-        context.user_data[category] = ''
-    del context.user_data['query']
-    if context.user_data.get('semester') and context.user_data.get('department'):
-        markup = markup_three
-        r_text = f"this is a semester & department you're looking for ? "
-        r_text += f" if that is right press the Find button "
-    elif context.user_data.get('semester'):
-        markup = markup_two
-        r_text = f"this is a semester you're looking for ?, if that is right press the department button "
-        r_text += f" or change your query on semester. "
-    else:
-        markup = markup_one
-        r_text = f" <h1 color='blue'> Please Selecte Semester </h1>"
-    if not context.user_data.get('semester'):
-        reply_text = f" please Selecte Your Semester First "
-        update.message.reply_text(
-            reply_text,
-            reply_markup=markup,
-            parse_mode = ParseMode.HTML
-        )
-    else:
-        temp = ' \n '
-        for key, value in context.user_data.items():
-            if key == 'semester':
-                temp += f"{key}  -  {SEMES[value]} \n "
-            elif key == 'department' and category == 'department':
-                temp += f"{key} -  { DEPARTMENTDIC[value] } \n "
-            else:
-                temp = ''
-
-        reply_text = f" Sweet! "
-        reply_text += temp
-        reply_text += r_text
-        update.message.reply_text(
-                
-                reply_text,
-                reply_markup=markup,
-            )
-
-    return CHOOSING
-
-
-def Reset_history(update: Update, context: CallbackContext):
-
-    text = update.message.text
-    clean_data(context.user_data)
-    if context.user_data.get('semester') and context.user_data.get('department'):
-        markup = markup_three
-    elif context.user_data.get('semester'):
-        markup = markup_two
-    else:
-        markup = markup_one
-    update.message.reply_text(
-        "sweet ! Just so you know, all queries you enterd befor all cleaned, "
-      
-        "You can find more, or change your query on something, department or semester. ",
-        reply_markup=markup,
-    )
-
-    return CHOOSING
-
-
-def show_history(update: Update, context: CallbackContext) -> None:
-
-    update.message.reply_text(
-        f"This is your current : {facts_to_str(context.user_data)}"
-    )
-
-
-def find(update: Update, context: CallbackContext) -> int:
-
-    if 'query' in context.user_data:
-        del context.user_data['query']
-
-    context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.TYPING)
-    COURSES = fetcher.get_all_by_sem_and_dep(context.user_data['semester'], context.user_data['department'])
-    QUERY['courses'] = COURSES
-    if COURSES:
-        keyboard = [
-
-            [course['course_code']]for course in COURSES
-            
-            
-        ]
-        keyboard += [['Back']]
-        reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
-        text = ''
-        for course in COURSES:
-
-            text += '<strong> course_name </strong> :  ' + course['course_name'] + '\n'
-            text += '<strong> course_code </strong> :  ' + course['course_code'] + '\n'
-            text += '<strong> department </strong> :  ' + str(course['department']['short_name']) + '\n'
-            text += '<strong> contributor </strong> :  ' + course['created_by'] + '\n\n\n'
-            reply_text = f"{course['department']['name']} Semester - {course['semester']} Courses List"
-        reply_text += '\n__________________________________________\n'
-        reply_text += text
-        update.message.reply_text(reply_text, reply_markup=reply_markup, parse_mode = ParseMode.HTML)
-    else:
-        keyboard = [['Back']]
-        reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")
-        reply_text = f"no course add in department - {context.user_data['department']} Yet ! "
-
-        update.message.reply_text(reply_text, reply_markup = reply_markup)
-    return SERVE
-
-
-def show_download_option(update: Update, context: CallbackContext):
-    QUERY['course_code'] = update.message.text
-    COURSES = QUERY['courses']
-    if COURSES:
-        
-        reply_text = f" Course {QUERY['course_code']} "
-        reply_text += '\n__________________________________________\n'
-        for item in COURSES:
-            if item['course_code'] == QUERY['course_code']:
-                course = item 
-
-        available_formats = course['available']  
-        txt = ''
-        for k,v in available_formats.items():
-            txt += f"{k} - {v} | "
-        reply_text += '\n\n course_name : ' + course['course_name']
-        reply_text += '\n course_code : ' + course['course_code']
-        reply_text += '\n course_description : ' + course['course_description']
-        reply_text += f"\n available in : " + txt
-        reply_text += f"\n ___________{course['course_code']}__________"
-            
-
-        keyboard = [
-
-            [str(av) for av in available_formats],
-            ['Back'],
-       
-
-        ]
-
-        reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")   
-        update.message.reply_text(text= reply_text, reply_markup = reply_markup)
-        return SERVE
-    else:
-        update.message.reply_text(text="Invalid Callback Data | 404",)
-        return ConversationHandler.END
-
-
-def serve_file(update: Update, context: CallbackContext):
+        return FASTSERVE
+def show_course(update: Update, context: CallbackContext):
     query = update.message
-    context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.UPLOAD_DOCUMENT)
-    data = fetcher.get_course_tg(context.user_data['semester'], context.user_data['department'], QUERY['course_code'])
-    user = update.message.from_user
-    MSG = 'Sending requested files ' + user.first_name
-    if data:
-        files = []
-        for i,j in data.items():
-            files = j['files'][query.text]
-        MSG = f"<strong> {j['course_name']} </strong> \n"
-        MSG += '\n__________________________________________\n\n'
-        MSG += "<strong> course_name </strong>: " + f"{j['course_name']} \n"
-        MSG += "<strong> course_description </strong>: " + f"{j['course_description']} \n"
-        MSG += "<strong> semester </strong>: " + f"{j['semester']} \n"
-        MSG += "<strong> department </strong>: " + f"{j['department']['name']} \n"
-        MSG += "<strong> contributor </strong>: " + f"{j['created_by']} \n"
-        MSG += "<strong> file format </strong>: " + f"{j['ava' ]} "
-        query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
-        for file in files:
-            file_id = file
-            context.bot.send_document(file_id, update.effective_message.chat_id,)
-       
-        reply_text = f"Lots of Thank 🙏 for choosing us  {user.first_name}! "
-        query.from_user.send_message(reply_text)
-        # context.bot.send_message(user.id, reply_text)
-        return SERVE
-    else:
-        MSG = f"Invalid Course code: {query.text} \n make sure that all characters are correct"
-        reply_text = MSG
-       
-        update.message.reply_text(text= reply_text)
-        return ConversationHandler.END
+    global QUERY, COURSES
+    print(query.text, 'show_course-----')
+    page = 1
+    COURSES = fetcher.get_courses()
+    if COURSES:
+        courses = fetcher.get_courses_of(COURSES,page)
+        keyboard = [
 
+           [InlineKeyboardButton('Next ⏩ ', callback_data= str(int(page) + 1))]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        reply_text = f" {SEMES[str(page)]} Courses List "
+        reply_text += '\n__________________________________________\n'
+        for key,course in courses.items():
+
+            reply_text += 'course_name : ' + course['course_name'] + '\n'
+            reply_text += 'course_code : ' + course['course_code'] + '\n'
+            reply_text += 'department : ' + str(course['department']['short_name']) + '\n'
+            reply_text += 'contributor : ' + course['created_by'] + '\n\n\n'
+        reply_text += f'\n\n copy and pase the course_code you want to download .'
+        query.reply_text(text=reply_text, reply_markup=reply_markup)
+
+        return FASTSERVE
+    else:
+        query.from_user.send_message(text=" Oops! somthing wrong use /start to continue ",)
+        return FASTSERVE
+
+def paginate_show_course(update: Update, context: CallbackContext):
+    query = update.callback_query
+    page = query.data
+    global COURSES
+    try:
+        if COURSES:
+            pass
+
+    except:
+        COURSES = fetcher.get_courses()
+
+    print(query.data, 'paginate_show_course-----')
+    courses = fetcher.get_courses_of(COURSES,page)
+    if courses:
+        if int(page) < 2 :
+
+            keyboard = [
+
+               [InlineKeyboardButton('Next ⏩ ', callback_data= str(int(page) + 1))]
+            ]
+        elif (int(page) + 1) > 10 :
+
+            keyboard = [
+
+               [InlineKeyboardButton(' ⏪ Preview ', callback_data= str(int(page) - 1))]
+            ]
+        else:
+
+            keyboard = [
+
+               [InlineKeyboardButton(' ⏪ Preview ', callback_data= str(int(page) - 1)), InlineKeyboardButton('Next ⏩ ', callback_data= str(int(page) + 1))]
+            ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        reply_text = f" {SEMES[str(page)]} Courses List "
+        reply_text += '\n__________________________________________\n'
+        for key,course in courses.items():
+
+            reply_text += 'course_name : ' + course['course_name'] + '\n'
+            reply_text += 'course_code : ' + course['course_code'] + '\n'
+            reply_text += 'department : ' + str(course['department']['short_name']) + '\n'
+            reply_text += 'contributor : ' + course['created_by'] + '\n\n\n'
+        reply_text += f'\n\ncopy and paset the course_code you want to download .'
+        query.edit_message_text(text=reply_text, reply_markup=reply_markup)
+
+        return FASTSERVE
+    else:
+        query.from_user.send_message(text=" Oops! somthing wrong happend,  use /start to continue ",)
+        return FASTSERVE
 
 
 def fast_show_download_option(update: Update, context: CallbackContext):
-    """Show new choice of buttons"""
-    # print(context.user_data, 'Show Option')
-    global FASTSEMESTER, FASTDEPARTMENT
-    query = update.message
-    QUERY['course_code'] = query.text
-    try:
-        data = fetcher.get_fast(query.text)
-        COURSES = data
-    except:
-        pass
-    if COURSES:
 
+    query = update.message
+    QUERY['course_code'] = query.text.upper()
+    print(query.text, 'fast_show_download_option-----')
+    try:
+        data = fetcher.get_fast(query.text.upper())
+        courses = data
         reply_text = f" Course {QUERY['course_code']} "
         reply_text += '\n__________________________________________\n'
-        for item in COURSES:
-            if COURSES[item]['course_code'] == QUERY['course_code']:
-                course = COURSES[item] 
+        for item in courses:
+            if courses[item]['course_code'] == QUERY['course_code']:
+                course = courses[item] 
 
         available_formats = course['ava']  
         txt = ''
@@ -498,43 +245,43 @@ def fast_show_download_option(update: Update, context: CallbackContext):
         reply_text += f"\n available in : " + txt
         reply_text += f"\n ___________{course['course_code']}__________"
             
-        QUERY['FASTSEMESTER'] = course['semester']
-        QUERY['FASTDEPARTMENT'] = course['department']['id']
+
         keyboard = [
-
-            [str(av) for av in available_formats],
-            ['Back'],
+            [InlineKeyboardButton(f'{av} ⬇️', callback_data=av)] for av in available_formats
        
-
         ]
 
-        reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Choose one of the button")   
+        reply_markup = InlineKeyboardMarkup(keyboard)   
+
         update.message.reply_text(text= reply_text, reply_markup = reply_markup)
         return FASTSERVE
-    else:
+    except Exception as e:
         update.message.reply_text(text=f"Invalid Course code: {query.text} \n make sure that all characters are correct",)
-        return ConversationHandler.END
+        print(e, 'exc______________')
+        return FASTSERVE
+  
 
 
 def fast_serve_file(update: Update, context: CallbackContext):
     # print(context.user_data, 'Serve File')
-    query = update.message
-    context.bot.sendChatAction(chat_id=update.message.from_user.id ,action = ChatAction.UPLOAD_DOCUMENT)
-    data = fetcher.get_course_tg(QUERY['FASTSEMESTER'], QUERY['FASTDEPARTMENT'], QUERY['course_code'])
-    user = update.message.from_user
+    query = update.callback_query
+    context.bot.sendChatAction(chat_id=query.from_user.id ,action = ChatAction.UPLOAD_DOCUMENT)
+    data = fetcher.get_course_tg(QUERY['course_code'])
+    user = query.from_user
     MSG = 'Sending requested files ' + user.first_name
+    print(query.data, 'fast_serve_file -----')
     if data:
         files = []
-        for i,j in data.items():
-            files = j['files'][query.text]
-        MSG = f"<strong> {j['course_name']} </strong> \n"
+        for key,value in data.items():
+            files = value['files'][query.data]
+        MSG = f"<strong> {value['course_name']} </strong> \n"
         MSG += '\n__________________________________________\n\n'
-        MSG += "<strong> course_name </strong>: " + f"{j['course_name']} \n"
-        MSG += "<strong> course_description </strong>: " + f"{j['course_description']} \n"
-        MSG += "<strong> semester </strong>: " + f"{j['semester']} \n"
-        MSG += "<strong> department </strong>: " + f"{j['department']['name']} \n"
-        MSG += "<strong> contributor </strong>: " + f"{j['created_by']} \n"
-        MSG += "<strong> file format </strong>: " + f"{j['ava' ]} "
+        MSG += "<strong> course_name </strong>: " + f"{value['course_name']} \n"
+        MSG += "<strong> course_description </strong>: " + f"{value['course_description']} \n"
+        MSG += "<strong> semester </strong>: " + f"{value['semester']} \n"
+        MSG += "<strong> department </strong>: " + f"{value['department']['name']} \n"
+        MSG += "<strong> contributor </strong>: " + f"{value['created_by']} \n"
+        MSG += "<strong> file format </strong>: " + f"{value['ava' ]} "
         query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
         for file in files:
             file_id = file
@@ -549,26 +296,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
         reply_text = MSG
        
         update.message.reply_text(text= reply_text)
-        return ConversationHandler.END
-
-
-
-def upload(update: Update, context: CallbackContext) -> int:
-    """Show new choice of buttons"""
-    QUERY = {}
-    query = update.callback_query
-    # query.answer("✨ commingsoon ✨")
-    keyboard = [
-        [
-            InlineKeyboardButton("Continue", callback_data=str(SHARE)),
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-   
-    query.edit_message_text(
-        text=" ", reply_markup=reply_markup
-    )
-    return INITIAL
+        return FASTSERVE
 
 
 
@@ -740,7 +468,7 @@ def show_option(update: Update, context: CallbackContext) -> int:
 
 def recive_file(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
-    data = fetcher.get_course_tg(QUERY['semester'], QUERY['department'], QUERY['course_code'])
+    data = fetcher.get_course_tg(QUERY['course_code'])
     user = query.message.chat
     MSG = 'ready to grab files Mr/Mss' + user.first_name
     query.answer(MSG)
@@ -889,7 +617,7 @@ def invalid_data_manager(update: Update, context: CallbackContext):
 def feed_back(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     update.message.reply_text(" Please Welcome! \n\n The only thing worse than not requesting feedback is not acting on it. ― Frank Sonnenberg, Listen to Your Conscience: That's Why You Have One ")
-    return CUTOMER_SERVICE 
+    return FASTSERVE 
 
 def how_to(update: Update, context: CallbackContext):
     user = update.message.from_user
@@ -909,7 +637,7 @@ def customer_service_information(update: Update, context: CallbackContext) -> in
         text = reply_text,
         reply_markup=markup_zero,
     )
-    return CHOOSING
+    return FASTSERVE
    
 
 def end(update: Update, context: CallbackContext) -> int:
@@ -938,236 +666,81 @@ def main() -> None:
 
 
     fast_download_handeler = ConversationHandler(
-        entry_points=[
-                        MessageHandler(
-                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
-                                ) & ~(
-
-                                   Filters.regex('^Semester$') |
-                                   Filters.regex('^Department$') |
-                                   Filters.regex('^Reset$') |
-                                   Filters.regex('^Back$') |
-                                   Filters.regex('^Home 🛖$') |
-                                   Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') |
-                                   Filters.regex('^Download$') 
-                                ), 
-
-
-                            fast_show_download_option),
-
-
-                        ],
+        entry_points=[CommandHandler('start', start)],
         states={
      
 
             FASTSERVE: [
-                MessageHandler(Filters.regex('^Back$'), download),
-                MessageHandler(Filters.regex(pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'), fast_serve_file),
-                MessageHandler(
+                        CommandHandler('list', show_course),
+                        CallbackQueryHandler(paginate_show_course, pattern='^' + '[' + str(1) + '-' + str(9) + ']' + '+'  + '$'),
+                        CallbackQueryHandler(fast_serve_file, pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'),
+                        MessageHandler(
                             Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
                                 ) & ~(
 
-                                   Filters.regex('^Semester$') |
-                                   Filters.regex('^Department$') |
-                                   Filters.regex('^Reset$') |
+
                                    Filters.regex('^Back$') |
                                    Filters.regex('^Home 🛖$') |
                                    Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') |
-                                   Filters.regex('^Download$') 
+                                   Filters.regex('^How To$') 
+
                                 ), 
 
 
                             fast_show_download_option),
-                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-                MessageHandler(Filters.regex('^Feed Back$'), feed_back),
-                MessageHandler(Filters.regex('^How To$'), how_to),
-                MessageHandler(Filters.regex('^Download$'), download),
-              
+                        CommandHandler('start', start),
+                        CommandHandler('share', share),
+                        MessageHandler(Filters.regex('^Feed Back$'), feed_back),
+                        MessageHandler(Filters.regex('^How To$'), how_to),
+
             ],
             
             
         },
         fallbacks=[
-            MessageHandler(Filters.regex('^Back$'), download),
-            MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-            MessageHandler(Filters.regex('^Feed Back$'), feed_back),
-            MessageHandler(Filters.regex('^How To$'), how_to),
-            MessageHandler(Filters.regex('^Download$'), download),
-
+            CommandHandler('share', share),
         ],
         name="my_astu_enlghten_fast_download",
         persistent=True,
     )
 
-    download_handeler = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('^Download$'), download)],
-        states={
-     
-            CUTOMER_SERVICE: [
-                MessageHandler(
-                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
-                                ) & ~(
 
-                                   Filters.regex('^Semester$') |
-                                   Filters.regex('^Department$') |
-                                   Filters.regex('^Reset$') |
-                                   Filters.regex('^Back$') |
-                                   Filters.regex('^Home 🛖$') |
-                                   Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') |
-                                   Filters.regex('^Download$') 
-                                ), 
-
-
-                            fast_show_download_option),
-                MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),customer_service_information),
-                MessageHandler(Filters.regex('^Reset$'), Reset_history),
-                MessageHandler(Filters.regex('^Back$'), download),
-                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-                MessageHandler(Filters.regex('^Download$'), download),
-            ],
-            CHOOSING: [
-                MessageHandler(
-                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
-                                ) & ~(
-
-                                   Filters.regex('^Semester$') |
-                                   Filters.regex('^Department$') |
-                                   Filters.regex('^Reset$') |
-                                   Filters.regex('^Back$') |
-                                   Filters.regex('^Home 🛖$') |
-                                   Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') |
-                                   Filters.regex('^Download$') 
-                                ), 
-
-
-                            fast_show_download_option),
-                MessageHandler(Filters.regex('^Semester$'), semester_choice),
-                MessageHandler(Filters.regex('^Department$'), department_choice),
-                MessageHandler(Filters.regex('^Reset$'), Reset_history),
-                MessageHandler(Filters.regex('^Back$'), download),
-                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-                MessageHandler(Filters.regex('^Feed Back$'), feed_back),
-                MessageHandler(Filters.regex('^How To$'), how_to),
-                MessageHandler(Filters.regex('^Download$'), download),
-            ],
-            TYPING_CHOICE: [
-                MessageHandler(
-                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
-                                ) & ~(
-
-                                   Filters.regex('^Semester$') |
-                                   Filters.regex('^Department$') |
-                                   Filters.regex('^Reset$') |
-                                   Filters.regex('^Back$') |
-                                   Filters.regex('^Home 🛖$') |
-                                   Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') |
-                                   Filters.regex('^Download$') 
-                                ), 
-
-
-                            fast_show_download_option),
-                MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')), semester_choice),
-                MessageHandler(Filters.regex('^Reset$'), Reset_history),
-                MessageHandler(Filters.regex('^Back$'), download),
-                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-                MessageHandler(Filters.regex('^Feed Back$'), feed_back),
-                MessageHandler(Filters.regex('^How To$'), how_to),
-                MessageHandler(Filters.regex('^Download$'), download),
-            ],
-            TYPING_REPLY: [
-                MessageHandler(
-                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
-                                ) & ~(
-
-                                   Filters.regex('^Semester$') |
-                                   Filters.regex('^Department$') |
-                                   Filters.regex('^Reset$') |
-                                   Filters.regex('^Back$') |
-                                   Filters.regex('^Home 🛖$') |
-                                   Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') |
-                                   Filters.regex('^Download$') 
-                                ), 
-
-
-                            fast_show_download_option),
-                MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Find$')),received_information),
-                MessageHandler(Filters.regex('^Reset$'), Reset_history),
-                MessageHandler(Filters.regex('^Back$'), download),
-                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-                MessageHandler(Filters.regex('^Feed Back$'), feed_back),
-                MessageHandler(Filters.regex('^How To$'), how_to),
-                MessageHandler(Filters.regex('^Download$'), download),
-            ],
-            SERVE: [
-                MessageHandler(Filters.regex('^Back$'), download),
-                MessageHandler(Filters.regex(pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'), serve_file),
-                MessageHandler(Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'), show_download_option),
-                MessageHandler(Filters.regex('^Home 🛖$'), start_over),
-                MessageHandler(Filters.regex('^Feed Back$'), feed_back),
-                MessageHandler(Filters.regex('^How To$'), how_to),
-                MessageHandler(Filters.regex('^Download$'), download),
-              
-            ],
-            
-            
-        },
-        fallbacks=[
-                    MessageHandler(
-                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
-                                ) & ~(
-
-                                   Filters.regex('^Semester$') |
-                                   Filters.regex('^Department$') |
-                                   Filters.regex('^Reset$') |
-                                   Filters.regex('^Back$') |
-                                   Filters.regex('^Home 🛖$') |
-                                   Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') |
-                                   Filters.regex('^Download$') 
-                                ), 
-
-
-                            fast_show_download_option),
-        ],
-        name="my_astu_enlghten_download",
-        persistent=True,
-    )
 
     upload_handler = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('^Share$'), share),],
+        entry_points=[CommandHandler('share', share),],
         states={
 
             SEMESTER: [
+                CommandHandler('start', start),
           
                 CallbackQueryHandler(school, pattern='^'  + str(ONE) + '|' + str(TWO) + '|' + str(THREE) + '|' + str(FOUR) + '|' + str(FIVE) + '|' + str(SIX) + '|' + str(SEVEN) + '|' + str(EIGHT) + '|' + str(NINE) + '|' + str(TEN) + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             DEPARTMENT: [
+                CommandHandler('start', start),
                 CallbackQueryHandler(department, pattern='^' + '[' + str(1) + '-' + str(9) + ']' + '+'  + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             COURSE: [
+                CommandHandler('start', start),
                
                 CallbackQueryHandler(courses, pattern='^' + '[' + str(1) + '-' + str(9) + ']' + '+'  + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
               
             ],
             OPTION: [
+                CommandHandler('start', start),
                 CallbackQueryHandler(show_option, pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             SERVE: [
+                CommandHandler('start', start),
                 CallbackQueryHandler(recive_file, pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'),
                 CallbackQueryHandler(show_option, pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             RECIVE: [
+                CommandHandler('start', start),
                 MessageHandler(Filters.document.mime_type("application/pdf"),pdf_manager),
                 MessageHandler((Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation")),ppt_manager),
                 MessageHandler(~(Filters.document.mime_type("application/pdf") | Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation") | (~Filters.document)), invalid_data_manager),
@@ -1180,22 +753,7 @@ def main() -> None:
             
         },
         fallbacks=[
-                    MessageHandler(
-                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
-                                ) & ~(
-
-                                   Filters.regex('^Semester$') |
-                                   Filters.regex('^Department$') |
-                                   Filters.regex('^Reset$') |
-                                   Filters.regex('^Back$') |
-                                   Filters.regex('^Home 🛖$') |
-                                   Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') |
-                                   Filters.regex('^Download$') 
-                                ), 
-
-
-                            fast_show_download_option),
+            CommandHandler('start', start),       
 
         ],
         name = 'my_astu_enlghten_upload',
@@ -1205,16 +763,10 @@ def main() -> None:
 
 
     dispatcher.add_handler(CommandHandler("help", help_command))
-    # dispatcher.add_handler(MessageHandler(Filters.regex('^Feed Back$'), feed_back))
     dispatcher.add_handler(fast_download_handeler)
-    dispatcher.add_handler(download_handeler)
     dispatcher.add_handler(upload_handler)
     # dispatcher.add_handler(share_handeler)
 
-    show_history_handler = CommandHandler('show_history', show_history)
-    start_handler = CommandHandler('start', start)
-    dispatcher.add_handler(show_history_handler)
-    dispatcher.add_handler(start_handler)
 
     # Start the Bot
     # updater.start_polling()
