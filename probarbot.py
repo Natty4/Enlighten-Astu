@@ -725,7 +725,7 @@ def main() -> None:
         states={
 
             SEMESTER: [
-                CommandHandler('start', start)
+                CommandHandler('start', start),
                 CallbackQueryHandler(school, pattern='^'  + str(ONE) + '|' + str(TWO) + '|' + str(THREE) + '|' + str(FOUR) + '|' + str(FIVE) + '|' + str(SIX) + '|' + str(SEVEN) + '|' + str(EIGHT) + '|' + str(NINE) + '|' + str(TEN) + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
