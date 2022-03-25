@@ -303,12 +303,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
 
 def upload(update: Update, context: CallbackContext) -> int:
     """Show new choice of buttons"""
-    CAMPUS = 'ASTU'
-    DATA = fetcher.get_semesters(CAMPUS)
-    SEMESTERS = {}
-    SCHOOLS = []
-    COURSES = []
-    QUERY = {}
+    
     query = update.message
     # query.answer("✨ commingsoon ✨")
     keyboard = [
@@ -324,6 +319,13 @@ def upload(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 def share(update: Update, context: CallbackContext) -> int:
+    global DATA
+    CAMPUS = 'ASTU'
+    DATA = fetcher.get_semesters(CAMPUS)
+    SEMESTERS = {}
+    SCHOOLS = []
+    COURSES = []
+    QUERY = {}
     query = update.callback_query
     if DATA:
         
