@@ -744,29 +744,10 @@ def main() -> None:
             
         },
         fallbacks=[
-            CommandHandler('start', start),
-            CommandHandler('list', show_course),
-            MessageHandler(Filters.regex('^Feed Back$') & (~ Filters.command), feed_back),
-            MessageHandler(Filters.regex('^How To$') & (~ Filters.command), how_to),
-            MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Feed Back$') | Filters.regex('^How To$')),customer_service_information),
-            MessageHandler(
-                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
-                                ) & ~(
-
-                                   Filters.command |
-                                   Filters.regex('^Back$') |
-                                   Filters.regex('^Home 🛖$') |
-                                   Filters.regex('^Feed Back$') |
-                                   Filters.regex('^How To$') 
-
-                                ), 
-
-
-                            fast_show_download_option),
-
+            CommandHandler('share', share),
         ],
         name = 'my_astu_enlghten_upload',
-        persistent=True,
+     
     )
 
 
