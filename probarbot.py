@@ -704,7 +704,7 @@ def main() -> None:
 
 
     upload_handler = ConversationHandler(
-        entry_points=[CommandHandler('share', share),],
+        entry_points=[CommandHandler('start', start),],
         states={
 
             SEMESTER: [
