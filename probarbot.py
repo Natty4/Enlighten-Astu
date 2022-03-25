@@ -145,7 +145,6 @@ def start_over(update: Update, context: CallbackContext) -> int:
 def show_course(update: Update, context: CallbackContext):
     query = update.message
     global QUERY, COURSES
-    print(query.text, 'show_course-----')
     page = 1
     COURSES = fetcher.get_courses()
     if COURSES:
@@ -182,7 +181,6 @@ def paginate_show_course(update: Update, context: CallbackContext):
     except:
         COURSES = fetcher.get_courses()
 
-    print(query.data, 'paginate_show_course-----')
     courses = fetcher.get_courses_of(COURSES,page)
     if courses:
         if int(page) < 2 :
@@ -191,7 +189,7 @@ def paginate_show_course(update: Update, context: CallbackContext):
 
                [InlineKeyboardButton('Next ⏩ ', callback_data= str(int(page) + 1))]
             ]
-        elif (int(page) + 1) > 10 :
+        elif (int(page) + 1) >= 10 :
 
             keyboard = [
 
@@ -257,7 +255,6 @@ def fast_show_download_option(update: Update, context: CallbackContext):
         return FASTSERVE
     else :
         update.message.reply_text(text=f"Invalid Course code: {query.text} \n make sure that all characters are correct",)
-        print(e, 'exc______________')
         return FASTSERVE
   
 
@@ -269,7 +266,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
     data = fetcher.get_course_tg(QUERY['course_code'])
     user = query.from_user
     MSG = 'Sending requested files ' + user.first_name
-    print(query.data, 'fast_serve_file -----')
+
     if data:
         files = []
         for key,value in data.items():
@@ -689,7 +686,6 @@ def main() -> None:
 
                             fast_show_download_option),
                         CommandHandler('start', start),
-                        CommandHandler('share', share),
                         MessageHandler(Filters.regex('^Feed Back$'), feed_back),
                         MessageHandler(Filters.regex('^How To$'), how_to),
                         MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Feed Back$') | Filters.regex('^How To$')),customer_service_information),
@@ -712,36 +708,29 @@ def main() -> None:
         states={
 
             SEMESTER: [
-                CommandHandler('start', start),
-          
                 CallbackQueryHandler(school, pattern='^'  + str(ONE) + '|' + str(TWO) + '|' + str(THREE) + '|' + str(FOUR) + '|' + str(FIVE) + '|' + str(SIX) + '|' + str(SEVEN) + '|' + str(EIGHT) + '|' + str(NINE) + '|' + str(TEN) + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             DEPARTMENT: [
-                CommandHandler('start', start),
                 CallbackQueryHandler(department, pattern='^' + '[' + str(1) + '-' + str(9) + ']' + '+'  + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             COURSE: [
-                CommandHandler('start', start),
                
                 CallbackQueryHandler(courses, pattern='^' + '[' + str(1) + '-' + str(9) + ']' + '+'  + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
               
             ],
             OPTION: [
-                CommandHandler('start', start),
                 CallbackQueryHandler(show_option, pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             SERVE: [
-                CommandHandler('start', start),
                 CallbackQueryHandler(recive_file, pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'),
                 CallbackQueryHandler(show_option, pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             RECIVE: [
-                CommandHandler('start', start),
                 MessageHandler(Filters.document.mime_type("application/pdf"),pdf_manager),
                 MessageHandler((Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation")),ppt_manager),
                 MessageHandler(~(Filters.document.mime_type("application/pdf") | Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation") | (~Filters.document)), invalid_data_manager),
