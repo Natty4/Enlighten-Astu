@@ -325,7 +325,6 @@ def share(update: Update, context: CallbackContext) -> int:
     SEMESTERS = {}
     SCHOOLS = []
     COURSES = []
-    QUERY = {}
     query = update.callback_query
     if DATA:
         
