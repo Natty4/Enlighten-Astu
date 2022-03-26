@@ -1,5 +1,5 @@
 """
-Enlighten Telegram Bot 
+Enlighten-Astu Telegram Bot 
 By: Natnael(Mr.PGuy)
 From buddies to buddies 
 """
@@ -748,7 +748,10 @@ def main() -> None:
 
 
     upload_handler = ConversationHandler(
-        entry_points=[CallbackQueryHandler(share, pattern='^' + str(SHARE) + '$'),],
+        entry_points=[
+                        CallbackQueryHandler(share, pattern='^' + str(SHARE) + '$'),
+                        CommandHandler('share', share),
+                        ],
         states={
 
             SEMESTER: [
