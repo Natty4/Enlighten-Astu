@@ -510,7 +510,7 @@ def feed_back(update: Update, context: CallbackContext) -> int:
 
 def how_to(update: Update, context: CallbackContext):
     user = update.message.from_user
-    reply_text = f"follow The instructions properly\n video guid coming soon!"
+    reply_text = f"follow The instructions properly\n video guide coming soon!"
     update.message.reply_text(reply_text)
 
 def customer_service_information(update: Update, context: CallbackContext) -> int:
@@ -520,7 +520,7 @@ def customer_service_information(update: Update, context: CallbackContext) -> in
     MSG += '\n___Feedback-Message___\n\n '
     MSG += text 
     context.bot.send_message(chat_id = NFEEDBACKS, text=MSG)
-    reply_text = f"Thanks {user.first_name} for your feedback 🧡"
+    reply_text = f"Thanks for your feedback, 🧡 {user.first_name} "
     update.message.reply_text(
         text = reply_text,
         reply_markup=markup_zero,
