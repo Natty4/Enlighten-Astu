@@ -710,6 +710,20 @@ def main() -> None:
         entry_points=[
                         CommandHandler('start', start), 
                         CommandHandler('list', show_course),
+                        MessageHandler(
+                            Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                                ) & ~(
+
+
+                                   Filters.regex('^Back$') |
+                                   Filters.regex('^Home 🛖$') |
+                                   Filters.regex('^Feed Back$') |
+                                   Filters.regex('^How To$') 
+
+                                ), 
+
+
+                            fast_show_download_option),
                         ],
         states={
      
