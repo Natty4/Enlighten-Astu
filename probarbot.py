@@ -264,7 +264,7 @@ def fast_show_download_option(update: Update, context: CallbackContext):
         reply_text += '\n\n course_name : ' + course['course_name']
         reply_text += '\n course_code : ' + course['course_code']
         reply_text += '\n course_description : ' + course['course_description']
-        reply_text += f"\n available in : " + txt if txt else ' 0 '
+        reply_text += f"\n available in : " + txt if txt else f"\n available in : " + ' 0 '
         reply_text += f"\n ___________{course['course_code']}__________"
             
 
