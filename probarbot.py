@@ -361,7 +361,11 @@ def share(update: Update, context: CallbackContext) -> int:
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
-        query.edit_message_text(text="Choose your semester ", reply_markup=reply_markup)
+        if query:
+
+            query.edit_message_text(text="Choose your semester ", reply_markup=reply_markup)
+        else:
+            update.message.reply_text(text="Choose your semester ", reply_markup=reply_markup)
        
         return SEMESTER
     else:
