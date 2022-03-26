@@ -306,7 +306,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
         query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
         for file in files:
             file_id = file
-            context.bot.send_document(file_id, update.effective_message.chat_id,)
+            context.bot.send_document(file_id, query.from_user.id,)
        
         reply_text = f"Lots of Thank 🙏 for choosing us  {user.first_name}! "
         query.from_user.send_message(reply_text)
