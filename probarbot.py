@@ -34,7 +34,6 @@ QUERY = {}
 SEMES = { '1': 'Freshman 1st', '2': 'Freshman 2nd', '3': 'Sophomore 1st', '4': 'Sophomore 2nd', '5': 'Junior 1st', '6': 'Junior 2nd', '7': 'Senior 1st', '8': 'Senior 2nd', '9': 'GC 1st', '10': 'GC 2nd'}
 RSEMES = { 'Freshman 1st': '1',  'Freshman 2nd': '2',  'Sophomore 1st': '3',  'Sophomore 2nd': '4',  'Junior 1st': '5',  'Junior 2nd': '6',  'Senior 1st': '7',  'Senior 2nd': '8',  'GC 1st': '9',  'GC 2nd': '10'}
 CAMPUS = 'ASTU'
-# DATA = fetcher.get_semesters(CAMPUS)
 SEMESTERS = {}
 SCHOOLS = []
 NCLOUDX = os.environ.get("NCLOUDX")
@@ -105,7 +104,7 @@ def start(update: Update, context: CallbackContext) -> int:
             f"To Enlighten us too, knowldge shelf. "
             f" you can download any availabel course materials in your department easly by senading course_code "
             f" or you can see availabel courses list by useing /list command ! \n\n"
-            f" any question | Feedback, use the below buttons "
+            f" any question | Feedback, we would love ro hear 🍎"
         )
   
     update.message.reply_text(text=reply_text, reply_markup=markup_zero)
@@ -131,9 +130,10 @@ def start_over(update: Update, context: CallbackContext) -> int:
         )
     else:
         reply_text += (
-            f"To Enlighten us too, knowldge shelf. you can specify your semester and department to see what courses are there in your department . "
-            " and then you can download any availabel course materials in your department easly "
-            f" or you can share what you have ! \n"
+            f"To Enlighten us too, knowldge shelf. "
+            f" you can download any availabel course materials in your department easly by senading course_code "
+            f" or you can see availabel courses list by useing /list command ! \n\n"
+            f" any question | Feedback, we would love ro hear 🍎"
         )
 
     if query:
@@ -160,7 +160,7 @@ def download(update: Update, context: CallbackContext) -> int:
             f"To Enlighten us too, knowldge shelf. "
             f" you can download any availabel course materials in your department easly by senading course_code "
             f" or you can see availabel courses list by useing /list command ! \n\n"
-            f" any question | Feedback, use the below buttons "
+            f" any question | Feedback, we would love ro hear 🍎"
         )
   
     update.message.reply_text(text=reply_text, reply_markup=markup_zero)
@@ -191,7 +191,7 @@ def show_course(update: Update, context: CallbackContext):
 
         return FASTSERVE
     else:
-        query.from_user.send_message(text=" Oops! somthing wrong use /start to continue ",)
+        query.from_user.send_message(text=" 🐙 Oops! somthing wrong happend,  use /start to continue ",)
         return FASTSERVE
 
 def paginate_show_course(update: Update, context: CallbackContext):
@@ -213,7 +213,7 @@ def paginate_show_course(update: Update, context: CallbackContext):
 
                [InlineKeyboardButton('Next ⏩ ', callback_data= str(int(page) + 1))]
             ]
-        elif (int(page) + 1) >= 10 :
+        elif int(page) >= 10 :
 
             keyboard = [
 
@@ -239,7 +239,7 @@ def paginate_show_course(update: Update, context: CallbackContext):
 
         return FASTSERVE
     else:
-        query.from_user.send_message(text=" Oops! somthing wrong happend,  use /start to continue ",)
+        query.from_user.send_message(text=" 🐙 Oops! somthing wrong happend,  use /start to continue ",)
         return FASTSERVE
 
 
@@ -247,7 +247,6 @@ def fast_show_download_option(update: Update, context: CallbackContext):
 
     query = update.message
     QUERY['course_code'] = query.text.upper()
-    print(query.text, 'fast_show_download_option-----')
     data = fetcher.get_fast(query.text.upper())
     courses = data
     if courses:
@@ -261,11 +260,11 @@ def fast_show_download_option(update: Update, context: CallbackContext):
         txt = ''
         for k,v in available_formats.items():
             txt += f"{k} - {v} | "
-        reply_text += '\n\n course_name : ' + course['course_name']
-        reply_text += '\n course_code : ' + course['course_code']
-        reply_text += '\n course_description : ' + course['course_description']
-        reply_text += f"\n available in : " + txt if txt else f"\n available in : " + ' 0 '
-        reply_text += f"\n ___________{course['course_code']}__________"
+        reply_text += '\n\ncourse_name : ' + course['course_name']
+        reply_text += '\ncourse_code : ' + course['course_code']
+        reply_text += '\ncourse_description : ' + course['course_description']
+        reply_text += f"\navailable : " + txt if txt else f"\n available in : " + ' 0 '
+        reply_text += f"\n _______ {course['course_code']} _______"
             
 
         keyboard = [
@@ -290,23 +289,23 @@ def fast_serve_file(update: Update, context: CallbackContext):
     data = fetcher.get_course_tg(query.data.split('N')[-1])
     user = query.from_user
     MSG = 'Sending requested files ' + user.first_name
-
+    query.answer("✨" + MSG + "✨")
     if data:
         files = []
         for key,value in data.items():
             files = value['files'][query.data.split('N')[0]]
-        MSG = f"<strong> {value['course_name']} </strong> \n"
+        MSG = f"<strong> {value['course_name']} </strong> "
         MSG += '\n__________________________________________\n\n'
-        MSG += "<strong> course_name </strong>: " + f"{value['course_name']} \n"
-        MSG += "<strong> course_description </strong>: " + f"{value['course_description']} \n"
-        MSG += "<strong> semester </strong>: " + f"{value['semester']} \n"
-        MSG += "<strong> department </strong>: " + f"{value['department']['name']} \n"
-        MSG += "<strong> contributor </strong>: " + f"{value['created_by']} \n"
-        MSG += "<strong> file format </strong>: " + f"{value['ava' ]} "
+        MSG += "<strong>course_name </strong>: " + f"{value['course_name']} \n"
+        MSG += "<strong>course_description </strong>: " + f"{value['course_description']} \n"
+        MSG += "<strong>semester </strong>: " + f"{value['semester']} \n"
+        MSG += "<strong>department </strong>: " + f"{value['department']['name']} \n"
+        MSG += "<strong>contributors </strong>: " + f"{value['created_by']} \n"
+        MSG += "<strong>file format </strong>: " + f"{value['ava' ]} "
+        MSG += '\n__________________________________________\n'
         query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
         for file in files:
             file_id = file
-            print(query.from_user.id, '---------fromuser--------')
             context.bot.send_document(query.from_user.id, file_id)
        
         reply_text = f"Lots of Thank 🙏 for choosing us  {user.first_name}! "
@@ -351,6 +350,8 @@ def share(update: Update, context: CallbackContext) -> int:
     SCHOOLS = []
     COURSES = []
     query = update.callback_query
+    if query:
+        query.answer("✨ sharing is caring ✨")
     if DATA:
         
         global QUERY
@@ -370,7 +371,7 @@ def share(update: Update, context: CallbackContext) -> int:
        
         return SEMESTER
     else:
-        update.message.from_user.send_message(text="Invalid Data | 404\n use /start re initiate",)
+        update.message.from_user.send_message(text=" 🐙 Oops! somthing wrong happend,  use /start to continue ",)
         return ConversationHandler.END
 
 def school(update: Update, context: CallbackContext) -> int:
@@ -396,7 +397,7 @@ def school(update: Update, context: CallbackContext) -> int:
 
         return DEPARTMENT
     else:
-        query.from_user.send_message(text="Invalid Callback Data | 404",)
+        query.from_user.send_message(text=" 🐙 Oops! somthing wrong happend,  use /start to continue ",)
         return ConversationHandler.END
 
 def department(update: Update, context: CallbackContext) -> int:
@@ -426,7 +427,7 @@ def department(update: Update, context: CallbackContext) -> int:
 
         return COURSE
     else:
-        query.from_user.send_message(text="Invalid Data | 404",)
+        query.from_user.send_message(text=" 🐙 Oops! somthing wrong happend,  use /start to continue ",)
         return ConversationHandler.END
 
 def courses(update: Update, context: CallbackContext) -> int:
@@ -481,7 +482,7 @@ def show_option(update: Update, context: CallbackContext) -> int:
         reply_text += '\n\n course_name : ' + course['course_name']
         reply_text += '\n course_code : ' + course['course_code']
         reply_text += '\n course_description : ' + course['course_description']
-        reply_text += f"\n available in : " + txt
+        reply_text += f"\n available : " + txt if txt else f"\n available : " + " 0 "
         reply_text += f"\n ___________{course['course_code']}__________"
         QUERY['course_name'] = course['course_name']
         QUERY['course_code'] = course['course_code']
@@ -507,7 +508,7 @@ def show_option(update: Update, context: CallbackContext) -> int:
 
         return SERVE
     else:
-        query.from_user.send_message(text="Invalid Data | 404",)
+        query.from_user.send_message(text=" 🐙 Oops! somthing wrong happend,  use /start to continue ",)
         return ConversationHandler.END
 
 def recive_file(update: Update, context: CallbackContext) -> int:
@@ -536,7 +537,7 @@ def recive_file(update: Update, context: CallbackContext) -> int:
             reply_text += '\n course_code : ' + course['course_code']
             reply_text += '\n course_description : ' + course['course_description']
             reply_text += f"\n available in : " + txt
-            reply_text += f"\n ___________{course['course_code']}__________"
+            reply_text += f"\n _______ {course['course_code']} _______ "
             reply_text += f"\n Fantastic Now Send Files Releted to This 👆 Course  - ! "
             query.edit_message_text(text = reply_text)
             return RECIVE
@@ -623,7 +624,7 @@ def pdf_manager(update: Update, context: CallbackContext):
         caption_text += '\n\n course_name : ' + course['course_name']
         caption_text += '\n course_code : ' + course['course_code']
         caption_text += '\n course_description : ' + course['course_description']
-        caption_text += f"\n ___________{course['course_code']}__________"
+        caption_text += f"\n _______ {course['course_code']} _______"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
     file_caption = update.effective_message.caption 
@@ -750,7 +751,12 @@ def main() -> None:
                         CommandHandler('start', start),
                         MessageHandler(Filters.regex('^Feed Back$'), feed_back),
                         MessageHandler(Filters.regex('^How To$'), how_to),
-                        MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Feed Back$') | Filters.regex('^How To$')),customer_service_information),
+                        MessageHandler(Filters.text & ~(
+                                                        Filters.command | 
+                                                        Filters.regex('^Feed Back$') | 
+                                                        Filters.regex('^How To$') | 
+                                                        Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$')
+                                                        ), customer_service_information),
                        
 
             ],
