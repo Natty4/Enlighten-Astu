@@ -142,6 +142,30 @@ def start_over(update: Update, context: CallbackContext) -> int:
     else:
         update.message.reply_text(text=reply_text, reply_markup=markup_zero)
         return FASTSERVE
+
+
+""" --Download Sction-- """
+
+def download(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+
+    reply_text = f"📖📚📒📕📙📘📗📚📖\n"
+    reply_text += f"Hi! {user.first_name} Welcome "
+    if context.user_data:
+        reply_text += (
+            f"Again To Enlighten us too, knowldge shelf. "
+        )
+    else:
+        reply_text += (
+            f"To Enlighten us too, knowldge shelf. "
+            f" you can download any availabel course materials in your department easly by senading course_code "
+            f" or you can see availabel courses list by useing /list command ! \n\n"
+            f" any question | Feedback, use the below buttons "
+        )
+  
+    update.message.reply_text(text=reply_text, reply_markup=markup_zero)
+    return ConversationHandler.END
+
 def show_course(update: Update, context: CallbackContext):
     query = update.message
     global QUERY, COURSES
@@ -678,10 +702,11 @@ def main() -> None:
     # Feed Back|How To
     # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
     
-
-
     fast_download_handeler = ConversationHandler(
-        entry_points=[CommandHandler('start', start)],
+        entry_points=[
+                        CommandHandler('start', start), 
+                        CommandHandler('list', show_course),
+                        ],
         states={
      
 
@@ -693,7 +718,7 @@ def main() -> None:
                             Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
                                 ) & ~(
 
-                                   Filters.command |
+
                                    Filters.regex('^Back$') |
                                    Filters.regex('^Home 🛖$') |
                                    Filters.regex('^Feed Back$') |
@@ -704,9 +729,10 @@ def main() -> None:
 
                             fast_show_download_option),
                         CommandHandler('start', start),
-                        MessageHandler(Filters.regex('^Feed Back$') & (~ Filters.command), feed_back),
-                        MessageHandler(Filters.regex('^How To$') & (~ Filters.command), how_to),
+                        MessageHandler(Filters.regex('^Feed Back$'), feed_back),
+                        MessageHandler(Filters.regex('^How To$'), how_to),
                         MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Feed Back$') | Filters.regex('^How To$')),customer_service_information),
+                        CommandHandler('share', share),
 
             ],
             
@@ -726,30 +752,36 @@ def main() -> None:
         states={
 
             SEMESTER: [
-                CommandHandler('start', start),
+                
+          
                 CallbackQueryHandler(school, pattern='^'  + str(ONE) + '|' + str(TWO) + '|' + str(THREE) + '|' + str(FOUR) + '|' + str(FIVE) + '|' + str(SIX) + '|' + str(SEVEN) + '|' + str(EIGHT) + '|' + str(NINE) + '|' + str(TEN) + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             DEPARTMENT: [
+                
                 CallbackQueryHandler(department, pattern='^' + '[' + str(1) + '-' + str(9) + ']' + '+'  + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             COURSE: [
+                
                
                 CallbackQueryHandler(courses, pattern='^' + '[' + str(1) + '-' + str(9) + ']' + '+'  + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
               
             ],
             OPTION: [
+                
                 CallbackQueryHandler(show_option, pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             SERVE: [
+                
                 CallbackQueryHandler(recive_file, pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'),
                 CallbackQueryHandler(show_option, pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'),
                 CallbackQueryHandler(start_over, pattern='^' + str(START) + '$'),
             ],
             RECIVE: [
+                
                 MessageHandler(Filters.document.mime_type("application/pdf"),pdf_manager),
                 MessageHandler((Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation")),ppt_manager),
                 MessageHandler(~(Filters.document.mime_type("application/pdf") | Filters.document.mime_type("application/vnd.ms-powerpoint") | Filters.document.mime_type("application/vnd.openxmlformats-officedocument.presentationml.presentation") | (~Filters.document)), invalid_data_manager),
@@ -762,11 +794,31 @@ def main() -> None:
             
         },
         fallbacks=[
-            CommandHandler('share', share),
+            CommandHandler('start', download),
+            CommandHandler('list', download),
+            MessageHandler(
+                Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
+                    ) & ~(
+
+
+                       Filters.regex('^Back$') |
+                       Filters.regex('^Home 🛖$') |
+                       Filters.regex('^Feed Back$') |
+                       Filters.regex('^How To$') 
+
+                    ), 
+
+
+                download),
+            MessageHandler(Filters.regex('^Feed Back$'), download),
+            MessageHandler(Filters.regex('^How To$'), download),
+            MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Feed Back$') | Filters.regex('^How To$')),download),    
+
         ],
         name = 'my_astu_enlghten_upload',
-     
+        persistent=True,
     )
+
 
 
 
