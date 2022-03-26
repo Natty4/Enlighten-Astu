@@ -117,10 +117,10 @@ def start_over(update: Update, context: CallbackContext) -> int:
 
     if query:
         query.from_user.send_message(text = reply_text, reply_markup = markup_zero)
-        return ConversationHandler.END
+        return FASTSERVE
     else:
         update.message.reply_text(text=reply_text, reply_markup=markup_zero)
-        return ConversationHandler.END
+        return FASTSERVE
 
 
 
