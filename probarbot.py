@@ -104,7 +104,7 @@ def start(update: Update, context: CallbackContext) -> int:
             f"To Enlighten us too, knowldge shelf. "
             f" you can download any availabel course materials in your department easly by senading course_code "
             f" or you can see availabel courses list by useing /list command ! \n\n"
-            f" any question | Feedback, we would love ro hear 🍎"
+            f" any question | Feedback,\nwe would love to hear 🍎"
         )
   
     update.message.reply_text(text=reply_text, reply_markup=markup_zero)
@@ -133,7 +133,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
             f"To Enlighten us too, knowldge shelf. "
             f" you can download any availabel course materials in your department easly by senading course_code "
             f" or you can see availabel courses list by useing /list command ! \n\n"
-            f" any question | Feedback, we would love ro hear 🍎"
+            f" any question | Feedback,\nwe would love to hear 🍎"
         )
 
     if query:
@@ -160,7 +160,7 @@ def download(update: Update, context: CallbackContext) -> int:
             f"To Enlighten us too, knowldge shelf. "
             f" you can download any availabel course materials in your department easly by senading course_code "
             f" or you can see availabel courses list by useing /list command ! \n\n"
-            f" any question | Feedback, we would love ro hear 🍎"
+            f" any question | Feedback,\nwe would love to hear 🍎"
         )
   
     update.message.reply_text(text=reply_text, reply_markup=markup_zero)
