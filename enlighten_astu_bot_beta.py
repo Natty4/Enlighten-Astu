@@ -163,8 +163,8 @@ def inline_service(update: Update, context: CallbackContext) -> None:
         for c in course:
             result = course[c]
 
-        filespdf = result['filespath'].get('PDF', '')
-        filesppt = result['filespath'].get('PPT', '')
+        filespdf = result['filesid'].get('PDF', '')
+        filesppt = result['filesid'].get('PPT', '')
         filestitle = result['filetitle'].get('file_title', '')
    
     else:
