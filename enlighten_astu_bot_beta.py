@@ -39,7 +39,8 @@ SCHOOLS = []
 NCLOUDX = os.environ.get("NCLOUDX")
 NCLOUDXUSERS = os.environ.get("NUSERSX")
 NCLOUDXFEEDBACKS = os.environ.get("NFEEDBACKS")
-ADMIN = os.environ.get("ADMIN") 
+ADMIN = os.environ.get("ADMIN")
+TOKEN = os.environ.get("TOKEN")
 PORT = int(os.environ.get('PORT', '8443'))
 
 
