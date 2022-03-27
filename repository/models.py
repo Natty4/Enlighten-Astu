@@ -92,7 +92,7 @@ class AssignmentExam(models.Model):
 			path = f'{self.course_name}_{self.course_code}/{self.semester}/{dt}/{filename}'
 		return path
 	
-	course_code = models.CharField(max_length = 369, unique = True)
+	course_code = models.CharField(max_length = 369)
 	course_name = models.CharField(max_length = 369)
 	semester = models.CharField(max_length = 369)
 	additional_info = models.TextField(null = True, blank = True)
