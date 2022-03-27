@@ -42,13 +42,7 @@ ADMIN = os.environ.get("ADMIN")
 PORT = int(os.environ.get('PORT', '8443'))
 
 
-NCLOUDX = '-1001509436095'
-NFEEDBACKS = '-1001509436095'
-TOKEN = '5049663114:AAEzkaBUwXIbf-1hUDkG9gw9U7XHz3JbM_0'
-
     
-
-
 
 
 reply_keyboard_0 = [
@@ -718,10 +712,10 @@ def main() -> None:
 
 
     # Start the Bot
-    updater.start_polling()
+    # updater.start_polling()
     
     # Start the Bot on Cloud
-    # updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
+    updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
     
 
     updater.idle()
