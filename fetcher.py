@@ -131,17 +131,24 @@ def get_course_tg(ccode):
     respons = {}
     ava = data.json()["available File Format"]
     aval = {}
-    path = {}
+    filesid = {}
+    filespath = {}
+    filescontributor = {}
     for a in ava:
         aval[a] = len(resp[a.lower() + "s"])
 
     for i in aval:
         fid = []
+        fpath = []
+        fcontributor = []
         j = resp[i.lower() + "s"]
         for file in j:
             fid.append(file["tg_file_id"])
-
-        path[i] = fid
+            fpath.append(file["tg_file_url"])
+            fcontributor.append(file['title'])
+        filesid[i] = fid
+        filespath[i] = fpath
+        filescontributor['tg_contributor'] = fcontributor
     course = {}
     course["course_id"] = resp["id"]
     course["course_name"] = resp["course_name"]
@@ -151,7 +158,9 @@ def get_course_tg(ccode):
     course["department"] = resp["department"]
     course["created_by"] = resp["created_by"]
     course["ava"] = aval
-    course["files"] = path
+    course["filesid"] = filesid
+    course["filespath"] = filespath
+    course["filescontributor"] = filescontributor
     respons[resp["course_name"]] = course
 
     return respons
@@ -163,34 +172,40 @@ def get_fast(ccode):
     data = requests.get(url)
     if data.status_code == 404:
         return False
-    else:
-        resp = data.json()["CourseMaterial-Info"]
-        # print(resp)
-        respons = {}
-        ava = data.json()["available File Format"]
-        aval = {}
-        path = {}
-        for a in ava:
-            aval[a] = len(resp[a.lower() + "s"])
+    resp = data.json()["CourseMaterial-Info"]
+    respons = {}
+    ava = data.json()["available File Format"]
+    aval = {}
+    filesid = {}
+    filespath = {}
+    filescontributor = {}
+    for a in ava:
+        aval[a] = len(resp[a.lower() + "s"])
 
-        for i in aval:
-            fid = []
-            j = resp[i.lower() + "s"]
-            for file in j:
+    for i in aval:
+        fid = []
+        fpath = []
+        fcontributor = []
+        j = resp[i.lower() + "s"]
+        for file in j:
+            fid.append(file["tg_file_id"])
+            fpath.append(file["tg_file_url"])
+            fcontributor.append(file['title'])
+        filesid[i] = fid
+        filespath[i] = fpath
+        filescontributor['tg_contributor'] = fcontributor
+    course = {}
+    course["course_id"] = resp["id"]
+    course["course_name"] = resp["course_name"]
+    course["course_code"] = resp["course_code"]
+    course["course_description"] = resp["course_description"]
+    course["semester"] = resp["semester"]
+    course["department"] = resp["department"]
+    course["created_by"] = resp["created_by"]
+    course["ava"] = aval
+    course["filesid"] = filesid
+    course["filespath"] = filespath
+    course["filescontributor"] = filescontributor
+    respons[resp["course_name"]] = course
 
-                fid.append(file["tg_file_id"])
-
-            path[i] = fid
-        course = {}
-        course["course_id"] = resp["id"]
-        course["course_name"] = resp["course_name"]
-        course["course_code"] = resp["course_code"]
-        course["course_description"] = resp["course_description"]
-        course["semester"] = resp["semester"]
-        course["department"] = resp["department"]
-        course["created_by"] = resp["created_by"]
-        course["ava"] = aval
-        course["files"] = path
-        respons[resp["course_name"]] = course
-
-        return respons
+    return respons

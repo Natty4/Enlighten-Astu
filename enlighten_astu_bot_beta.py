@@ -6,10 +6,12 @@ From buddies to buddies
 
 import logging
 import os
+from uuid import uuid4
 from typing import Dict
 
 from telegram import *
 from telegram.ext import *
+from telegram.utils.helpers import escape_markdown
 
 # import fetcher modul
 import fetcher
@@ -38,6 +40,13 @@ NFEEDBACKS = os.environ.get("NFEEDBACKS")
 TOKEN = os.environ.get("TOKEN") 
 ADMIN = os.environ.get("ADMIN") 
 PORT = int(os.environ.get('PORT', '8443'))
+
+
+NCLOUDX = '-1001509436095'
+NFEEDBACKS = '-1001509436095'
+TOKEN = '5049663114:AAEzkaBUwXIbf-1hUDkG9gw9U7XHz3JbM_0'
+
+    
 
 
 
@@ -122,9 +131,57 @@ def start_over(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(text=reply_text, reply_markup=markup_zero)
         return FASTSERVE
 
+""" Inline Service Section """
+
+def inlinequery(update: Update, context: CallbackContext) -> None:
+    """Handle the inline query."""
+    query = update.inline_query.query
+
+    if query == "":
+        return
+    course = fetcher.get_course_tg(query.upper())
+    if course:
+        for c in course:
+            result = course[c]
+
+        filespdf = result['filespath'].get('PDF', '')
+        filesppt = result['filespath'].get('PPT', '')
+        print(result, '-----result----')
+        [print(cm, '------cm--------') for cm in filespdf]
+    else:
+        return
+    keyboard = [
+
+           [InlineKeyboardButton(' 🧲 More ', switch_inline_query_current_chat=query,), InlineKeyboardButton(' Share 🚀 ', switch_inline_query=query,)]
+        ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    results = [
+        InlineQueryResultDocument(
+            id=str(uuid4()),
+            title=query,
+            document_url=cm,
+            mime_type="application/pdf",
+            caption=f"course_code : {result['course_code']} \ncourse_name : {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
+            reply_markup = reply_markup
+            ) for cm in filespdf]
+    results += [
+        InlineQueryResultDocument(
+            id=str(uuid4()),
+            title=query,
+            document_url=cm,
+            mime_type="application/pdf",
+            caption=f"course_code : {result['course_code']} \ncourse_name : {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
+            reply_markup = reply_markup
+            ) for cm in filesppt
+
+    ]
+
+    update.inline_query.answer(results, auto_pagination=True,)
 
 
-""" --Courses Menu Sction-- """
+
+
+""" Courses Menu Sction """
 
 def show_course(update: Update, context: CallbackContext):
     query = update.message
@@ -204,7 +261,7 @@ def paginate_show_course(update: Update, context: CallbackContext):
 
 
 
-""" --Choose Rout Sction-- """
+""" Choose Rout Sction """
 
 def download_or_share(update: Update, context: CallbackContext) -> int:
     
@@ -212,8 +269,8 @@ def download_or_share(update: Update, context: CallbackContext) -> int:
     # query.answer("✨ commingsoon ✨")
     keyboard = [
         [
-            InlineKeyboardButton(" ⬇️ Download ", callback_data=str(DOWNLOAD) + 'N' + query.text.upper()),
-            InlineKeyboardButton("Share ↗️ ", callback_data=str(SHARE) + 'N' + query.text.upper()),
+            InlineKeyboardButton(" ⬇️ Download ", callback_data=str(DOWNLOAD) + 'MrPGuy' + query.text.upper()),
+            InlineKeyboardButton("Share ↗️ ", callback_data=str(SHARE) + 'MrPGuy' + query.text.upper()),
         ],
        
     ]
@@ -227,14 +284,14 @@ def download_or_share(update: Update, context: CallbackContext) -> int:
 
 
 
-""" --Download Sction-- """
+""" Download Sction """
 
 
 def fast_show_download_option(update: Update, context: CallbackContext):
 
     query = update.callback_query
-    QUERY['course_code'] = query.data.split('N')[-1].upper()
-    data = fetcher.get_fast(query.data.split('N')[-1].upper())
+    QUERY['course_code'] = query.data.split('MrPGuy')[-1].upper()
+    data = fetcher.get_fast(query.data.split('MrPGuy')[-1].upper())
     courses = data
     if courses:
         reply_text = f" Course {QUERY['course_code']} "
@@ -255,7 +312,7 @@ def fast_show_download_option(update: Update, context: CallbackContext):
             
 
         keyboard = [
-            [InlineKeyboardButton(f'{av} ⬇️', callback_data=av + 'N' + course['course_code'] )] for av in available_formats
+            [InlineKeyboardButton(f'{av} ⬇️', callback_data=av + 'MrPGuy' + course['course_code'] )] for av in available_formats
        
         ]
 
@@ -264,7 +321,7 @@ def fast_show_download_option(update: Update, context: CallbackContext):
         query.edit_message_text(text= reply_text, reply_markup = reply_markup)
         return FASTSERVE
     else :
-        query.from_user.send_message(text=f"Invalid Course code: \"{query.data.split('N')[-1]} \n make sure that all characters are correct",)
+        query.from_user.send_message(text=f"Invalid Course code: \"{query.data.split('MrPGuy')[-1]} \n make sure that all characters are correct",)
         return FASTSERVE
   
 
@@ -272,21 +329,21 @@ def fast_serve_file(update: Update, context: CallbackContext):
 
     query = update.callback_query
     context.bot.sendChatAction(chat_id=query.from_user.id ,action = ChatAction.UPLOAD_DOCUMENT)
-    data = fetcher.get_course_tg(query.data.split('N')[-1])
+    data = fetcher.get_course_tg(query.data.split('MrPGuy')[-1])
     user = query.from_user
     MSG = 'Sending requested files ' + user.first_name
     query.answer("✨" + MSG + "✨")
     if data:
         files = []
         for key,value in data.items():
-            files = value['files'][query.data.split('N')[0]]
+            files = value['filesid'][query.data.split('MrPGuy')[0]]
         MSG = f"<strong> {value['course_name']} </strong> "
         MSG += '\n__________________________________________\n\n'
         MSG += "<strong>course_name </strong>: " + f"{value['course_name']} \n"
         MSG += "<strong>course_description </strong>: " + f"{value['course_description']} \n"
         MSG += "<strong>semester </strong>: " + f"{value['semester']} \n"
         MSG += "<strong>department </strong>: " + f"{value['department']['name']} \n"
-        MSG += "<strong>contributors </strong>: " + f"{value['created_by']} \n"
+        MSG += "<strong>contributors </strong>: " + f"{value['created_by'], value['filescontributor'].get('tg_contributor', ' ')} \n"
         MSG += "<strong>file format </strong>: " + f"{value['ava' ]} "
         MSG += '\n__________________________________________\n'
         query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
@@ -299,7 +356,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
         # context.bot.send_message(user.id, reply_text)
         return FASTSERVE
     else:
-        MSG = f"Invalid Course code: \"{query.data.split('N')[-1]}re that all characters are correct"
+        MSG = f"Invalid Course code: \"{query.data.split('MrPGuy')[-1]}re that all characters are correct"
         reply_text = MSG
        
         update.message.reply_text(text= reply_text)
@@ -308,14 +365,14 @@ def fast_serve_file(update: Update, context: CallbackContext):
 
 
 
-""" --Upload Sction-- """
+""" Upload Sction """
 
 def fast_show_share_option(update: Update, context: CallbackContext) -> int:
 
     query = update.callback_query
     global QUERY
-    QUERY['course_code'] = query.data.split('N')[-1].upper()
-    data = fetcher.get_fast(query.data.split('N')[-1].upper())
+    QUERY['course_code'] = query.data.split('MrPGuy')[-1].upper()
+    data = fetcher.get_fast(query.data.split('MrPGuy')[-1].upper())
     COURSES = data
     QUERY['course'] = COURSES
     if COURSES:
@@ -358,7 +415,7 @@ def fast_show_share_option(update: Update, context: CallbackContext) -> int:
 
         return FASTSHARE
     else:
-        query.from_user.send_message(text=f"Invalid Course code: \"{query.data.split('N')[-1]}\" \n make sure that all characters are correct",)
+        query.from_user.send_message(text=f"Invalid Course code: \"{query.data.split('MrPGuy')[-1]}\" \n make sure that all characters are correct",)
         return FASTSHARE
 
 def fast_recive_file(update: Update, context: CallbackContext) -> int:
@@ -424,14 +481,15 @@ def ppt_manager(update: Update, context: CallbackContext):
         caption_text += f"\n _______ {course['course_code']} _______"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
-    file_caption = update.effective_message.caption 
+    file_caption = update.effective_message.caption
+    file_from = update.effective_message.from_user 
     QUERY['msg_id'] = update.effective_message.message_id
     typ = 'ppt'
     file_obj = {
             "cm": course['course_id'],
             "tg_file_id": str(file_id),
-            "tg_file_url": str(msg_id) + 'N' + str(update.effective_message.chat_id),
-            "title": file_caption if file_caption else ""
+            "tg_file_url": context.bot.get_file(file_id).file_path,
+            "title": file_caption if file_caption else file_from.first_name
 
         }
     fetcher.upload_file(file_obj, typ)
@@ -473,13 +531,14 @@ def pdf_manager(update: Update, context: CallbackContext):
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
     file_caption = update.effective_message.caption 
+    file_from = update.effective_message.from_user 
     QUERY['msg_id'] = update.effective_message.message_id
     typ = 'pdf'
     file_obj = {
             "cm": course['course_id'],
             "tg_file_id": str(file_id),
-            "tg_file_url": str(msg_id) + 'N' + str(update.effective_message.chat_id),
-            "title": file_caption if file_caption else ""
+            "tg_file_url": context.bot.get_file(file_id).file_path,
+            "title": file_caption if file_caption else file_from.first_name
 
         }
     fetcher.upload_file(file_obj, typ)
@@ -502,6 +561,11 @@ def invalid_data_manager(update: Update, context: CallbackContext):
     user = update.message.from_user
     update.message.reply_text(" <strong> Please send a valid data ! </strong> \n\n The only supported file formats are PPT and PDF  \n thank you for your smile 😊 ", parse_mode = ParseMode.HTML)
     return FASTRECIVE 
+
+
+
+
+""" Customers Service Section """
 
 def feed_back(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
@@ -649,14 +713,15 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(fast_download_handeler)
+    dispatcher.add_handler(InlineQueryHandler(inlinequery))
 
 
 
     # Start the Bot
-    # updater.start_polling()
+    updater.start_polling()
     
     # Start the Bot on Cloud
-    updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
+    # updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
     
 
     updater.idle()
