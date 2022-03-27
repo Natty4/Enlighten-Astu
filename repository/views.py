@@ -20,7 +20,7 @@ class TGUserCreateApiView(APIView):
 			serializer.save()
 			return Response(status = status.HTTP_201_CREATED)
 		return Response(status = status.HTTP_400_BAD_REQUEST)
-
+	
 class TGUsersListApiView(ListAPIView):
     queryset = TGUser.objects.all()
     serializer_class = TGUserSerializer
@@ -57,7 +57,6 @@ class LectureBookCreateApiView(APIView):
 			serializer.save()
 			return Response(status = status.HTTP_201_CREATED)
 		return Response(status = status.HTTP_400_BAD_REQUEST)
-
 
 class CourseMaterialListApiView(APIView):
 
@@ -138,8 +137,6 @@ class CourseMaterialListBySemesterDepartmentApiView(APIView):
 		serialized_CourseMaterial = CourseMaterialSerializer(CourseMaterial, many = True)
 
 		return Response({ "CourseMaterial-Info" : serialized_CourseMaterial.data, "status" : status.HTTP_200_OK})
-
-
 
 class CourseMaterialListByDepartmentApiView(APIView):
 
