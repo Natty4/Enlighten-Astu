@@ -4,12 +4,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
+from rest_framework.generics import ListAPIView
 from rest_framework import status
 from users.permissions import IsOwnerOrReadOnly
 from .models import *
 from .serializers import *
 
-
+ 
 class TGUserCreateApiView(APIView):
 	queryset = TGUser.objects.all()
 	serializer_class = TGUserSerializer
@@ -20,6 +21,9 @@ class TGUserCreateApiView(APIView):
 			return Response(status = status.HTTP_201_CREATED)
 		return Response(status = status.HTTP_400_BAD_REQUEST)
 
+class TGUserListApiView(ListAPIView):
+    queryset = TGUser.objects.all()
+    serializer_class = TGUserSerializer
 
 class LecturePPTCreateApiView(APIView):
 	queryset = LecturePPT.objects.all()
