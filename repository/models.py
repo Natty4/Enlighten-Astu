@@ -92,7 +92,7 @@ class AssignmentExam(models.Model):
 			path = f'{self.course_name}_{self.course_code}/{self.semester}/{dt}/{filename}'
 		return path
 	
-	course_code = models.CharField(max_length = 369)
+	course_code = models.CharField(max_length = 369, unique = True)
 	course_name = models.CharField(max_length = 369)
 	semester = models.CharField(max_length = 369)
 	additional_info = models.TextField(null = True, blank = True)
@@ -120,7 +120,7 @@ class LectureBook(models.Model):
 	tg_file_id = models.CharField(max_length = 255, unique = True)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
-	contributors = models.CharField(max_length = 369, default = '', blank = True)
+	# contributors = models.CharField(max_length = 369, default = '', blank = True)
 	def __str__(self):
 		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
 
@@ -137,7 +137,7 @@ class LecturePPT(models.Model):
 	tg_file_id = models.CharField(max_length = 255, unique = True)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
-	contributors = models.CharField(max_length = 369, default = '', blank = True)
+	# contributors = models.CharField(max_length = 369, default = '', blank = True)
 	
 	def __str__(self):
 		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
@@ -155,7 +155,7 @@ class LecturePDF(models.Model):
 	tg_file_id = models.CharField(max_length = 255, unique = True)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
-	contributors = models.CharField(max_length = 369, default = '', blank = True)
+	# contributors = models.CharField(max_length = 369, default = '', blank = True)
 	
 	def __str__(self):
 		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
@@ -173,7 +173,7 @@ class Image(models.Model):
 	tg_file_id = models.CharField(max_length = 255, unique = True)
 	tg_file_url = models.CharField(max_length = 255, null = True, blank = True)
 	title = models.CharField(max_length = 369, help_text = 'chapter or specific title related to this file ', null = True, blank = True)
-	contributors = models.CharField(max_length = 369, default = '', blank = True)
+	# contributors = models.CharField(max_length = 369, default = '', blank = True)
 	
 	def __str__(self):
 		return self.title + ':' + self.cm.course_name if self.title else self.cm.course_name
