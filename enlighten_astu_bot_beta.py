@@ -507,7 +507,6 @@ def ppt_manager(update: Update, context: CallbackContext):
     file_from = update.effective_message.from_user 
     QUERY['msg_id'] = update.effective_message.message_id
     typ = 'ppt'
-    print(update.effective_message.document, '-----document-----', file_name)
     file_obj = {
             "cm": course['course_id'],
             "tg_file_id": str(file_id),
@@ -526,7 +525,7 @@ def ppt_manager(update: Update, context: CallbackContext):
                     ]
     reply_markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Press Done When You Finsh Adding PDF")
     
-    QUERY['done_msg'] = f"{course['course_name']} PPT File recived 📚. Thaks {update.message.from_user.first_name} !"
+    QUERY['done_msg'] = f"{course['course_name']} PPT File recived 📚. Thaks 🙏 {update.message.from_user.first_name} !"
     reply_text = 'is that all you got ??! Press Done, otherwise keep senading 🖖 '
     update.message.reply_text(text =reply_text , reply_markup = reply_markup)
     return FASTRECIVE
@@ -558,7 +557,6 @@ def pdf_manager(update: Update, context: CallbackContext):
     file_from = update.effective_message.from_user 
     QUERY['msg_id'] = update.effective_message.message_id
     typ = 'pdf'
-    print(update.effective_message.document, '-----document-----', file_name)
     file_obj = {
             "cm": course['course_id'],
             "tg_file_id": str(file_id),
@@ -577,7 +575,7 @@ def pdf_manager(update: Update, context: CallbackContext):
                     ]
     reply_markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True, input_field_placeholder="Press Done When You Finsh Adding PDF")
     
-    reply_text = f" {course['course_name']} PDF File recived 📚. Thanks {update.message.from_user.first_name} !\n"
+    reply_text = f" {course['course_name']} PDF File recived 📚. Thanks 🙏 {update.message.from_user.first_name} !\n"
     QUERY['done_msg'] = reply_text
     update.message.reply_text(text ='reading ...' , reply_markup = reply_markup)
     return FASTRECIVE
