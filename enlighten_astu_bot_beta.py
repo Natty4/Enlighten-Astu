@@ -134,8 +134,7 @@ def inline_service(update: Update, context: CallbackContext) -> None:
     course = fetcher.get_course_tg(query.upper())
     user = update.inline_query.from_user
     if course:
-        context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts inline_service with enlightenastubot")
-        context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f'{update.inline_query}')
+        context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f'{update.inline_query}\n starts inline_service with enlightenastubot')
         user_obj = {
         'user_tg_id': user.id,
         'username': user.username,
