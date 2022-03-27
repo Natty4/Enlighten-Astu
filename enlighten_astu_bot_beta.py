@@ -745,10 +745,10 @@ def main() -> None:
 
 
     # Start the Bot
-    updater.start_polling()
+    # updater.start_polling()
     
     # Start the Bot on Cloud
-    # updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
+    updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
     
 
     updater.idle()
