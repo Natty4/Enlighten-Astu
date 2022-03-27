@@ -182,7 +182,7 @@ def inline_service(update: Update, context: CallbackContext) -> None:
             mime_type="application/pdf",
             caption=f"course_code : {result['course_code']} \ncourse_name : {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
             reply_markup = reply_markup
-            ) for title,file in itertools.zip_longest(filestitle, filespdf)]
+            ) for title,file in zip(filestitle, filespdf)]
     results += [
         InlineQueryResultDocument(
             id=str(uuid4()),
@@ -192,7 +192,7 @@ def inline_service(update: Update, context: CallbackContext) -> None:
             # mime_type="application/vnd.ms-powerpoint",
             caption=f"course_code : {result['course_code']} \ncourse_name : {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
             reply_markup = reply_markup
-            ) for title,file in itertools.zip_longest(filestitle, filesppt)
+            ) for title,file in zip(filestitle, filesppt)
 
     ]
 
