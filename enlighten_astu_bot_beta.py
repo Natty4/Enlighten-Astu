@@ -327,7 +327,7 @@ def fast_show_download_option(update: Update, context: CallbackContext):
         reply_text += '\n\ncourse_name : ' + course['course_name']
         reply_text += '\ncourse_code : ' + course['course_code']
         reply_text += '\ncourse_description : ' + course['course_description']
-        reply_text += f"\navailable : " + txt if txt else f"\n available in : " + ' 0 '
+        reply_text += f"\navailable : " + txt if txt else f"\n available : " + ' 0 '
         reply_text += f"\n _______ {course['course_code']} _______"
             
 
@@ -410,7 +410,7 @@ def fast_show_share_option(update: Update, context: CallbackContext) -> int:
         reply_text += '\n\ncourse_name : ' + course['course_name']
         reply_text += '\ncourse_code : ' + course['course_code']
         reply_text += '\ncourse_description : ' + course['course_description']
-        reply_text += f"\navailable : " + txt if txt else f"\n available in : " + ' 0 '
+        reply_text += f"\navailable : " + txt if txt else f"\n available : " + ' 0 '
         reply_text += f"\n _______ {course['course_code']} _______"
         QUERY['course_name'] = course['course_name']
         QUERY['course_code'] = course['course_code']
@@ -460,7 +460,7 @@ def fast_recive_file(update: Update, context: CallbackContext) -> int:
         reply_text += '\n\ncourse_name : ' + course['course_name']
         reply_text += '\ncourse_code : ' + course['course_code']
         reply_text += '\ncourse_description : ' + course['course_description']
-        reply_text += f"\navailable : " + txt if txt else f"\n available in : " + ' 0 '
+        reply_text += f"\navailable : " + txt if txt else f"\n available : " + ' 0 '
         reply_text += f"\n _______ {course['course_code']} _______"
         reply_text += f"\n Fantastic Now Send Files Releted to This 👆 Course  - ! "
         query.edit_message_text(text = reply_text)
@@ -498,7 +498,7 @@ def ppt_manager(update: Update, context: CallbackContext):
         caption_text += '\n\ncourse_name : ' + course['course_name']
         caption_text += '\ncourse_code : ' + course['course_code']
         caption_text += '\ncourse_description : ' + course['course_description']
-        caption_text += f"\navailable : " + txt if txt else f"\n available in : " + ' 0 '
+        caption_text += f"\navailable : " + txt if txt else f"\n available : " + ' 0 '
         caption_text += f"\n _______ {course['course_code']} _______"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
@@ -548,7 +548,7 @@ def pdf_manager(update: Update, context: CallbackContext):
         caption_text += '\n\ncourse_name : ' + course['course_name']
         caption_text += '\ncourse_code : ' + course['course_code']
         caption_text += '\ncourse_description : ' + course['course_description']
-        caption_text += f"\navailable : " + txt if txt else f"\n available in : " + ' 1 '
+        caption_text += f"\navailable : " + txt if txt else f"\n available : " + ' 1 '
         caption_text += f"\n _______ {course['course_code']} _______"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
