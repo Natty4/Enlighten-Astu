@@ -21,7 +21,7 @@ class TGUserCreateApiView(APIView):
 			return Response(status = status.HTTP_201_CREATED)
 		return Response(status = status.HTTP_400_BAD_REQUEST)
 
-class TGUserListApiView(ListAPIView):
+class TGUsersListApiView(ListAPIView):
     queryset = TGUser.objects.all()
     serializer_class = TGUserSerializer
 
