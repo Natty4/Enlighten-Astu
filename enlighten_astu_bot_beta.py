@@ -6,6 +6,7 @@ From buddies to buddies
 
 import logging
 import os
+import itertools
 from uuid import uuid4
 from typing import Dict
 
@@ -36,13 +37,10 @@ CAMPUS = 'ASTU'
 SEMESTERS = {}
 SCHOOLS = []
 NCLOUDX = os.environ.get("NCLOUDX")
-NFEEDBACKS = os.environ.get("NFEEDBACKS")
-TOKEN = os.environ.get("TOKEN") 
+NCLOUDXUSERS = os.environ.get("NUSERSX")
+NCLOUDXFEEDBACKS = os.environ.get("NFEEDBACKS")
 ADMIN = os.environ.get("ADMIN") 
 PORT = int(os.environ.get('PORT', '8443'))
-
-
-    
 
 
 reply_keyboard_0 = [
@@ -61,8 +59,8 @@ def start(update: Update, context: CallbackContext) -> int:
     # Get user that sent /start and log his name
     user = update.message.from_user
     # context.bot.send_message(chat_id= ADMIN ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot")
-    context.bot.send_message(chat_id = NCLOUDX ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with enlightenastubot")
-    context.bot.send_message(chat_id = NCLOUDX ,text=f'{update}')
+    context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with enlightenastubot")
+    context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f'{update}')
     user_obj = {
     'user_tg_id': user.id,
     'username': user.username,
@@ -127,21 +125,48 @@ def start_over(update: Update, context: CallbackContext) -> int:
 
 """ Inline Service Section """
 
-def inlinequery(update: Update, context: CallbackContext) -> None:
+def inline_service(update: Update, context: CallbackContext) -> None:
     """Handle the inline query."""
     query = update.inline_query.query
 
     if query == "":
         return
     course = fetcher.get_course_tg(query.upper())
+    user = update.inline_query.from_user
     if course:
+        context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts inline_service with enlightenastubot")
+        context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f'{update.inline_query}')
+        user_obj = {
+        'user_tg_id': user.id,
+        'username': user.username,
+        'first_name': user.first_name,
+        'last_name': user.last_name 
+        }
+        reply_text = f" 📖📚📒📕📙📘📗📚📖 \n"
+        reply_text += f"Hi! {user.first_name} Welcome "
+        if context.user_data:
+            reply_text += (
+                f"Again To Enlighten us too, knowldge shelf. "
+            )
+        else:
+            reply_text += (
+                f"To Enlighten us too, knowldge shelf. "
+                f" you can download any availabel course materials in your department easly by senading course_code "
+                f" or you can see availabel courses list by useing /list command ! \n\n"
+                f" any question | Feedback,\nwe would love to hear 🍎"
+            )
+        try:
+            if fetcher.recored_new_user(user_obj):
+                context.bot.send_message(chat_id=user.id, text=reply_text, reply_markup=markup_zero)
+        except Exception as e:
+            print(e,'already exist')
         for c in course:
             result = course[c]
 
         filespdf = result['filespath'].get('PDF', '')
         filesppt = result['filespath'].get('PPT', '')
-        print(result, '-----result----')
-        [print(cm, '------cm--------') for cm in filespdf]
+        filestitle = result['filetitle'].get('file_title', '')
+   
     else:
         return
     keyboard = [
@@ -152,21 +177,22 @@ def inlinequery(update: Update, context: CallbackContext) -> None:
     results = [
         InlineQueryResultDocument(
             id=str(uuid4()),
-            title=query,
-            document_url=cm,
+            title=title,
+            document_url=file,
             mime_type="application/pdf",
             caption=f"course_code : {result['course_code']} \ncourse_name : {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
             reply_markup = reply_markup
-            ) for cm in filespdf]
+            ) for title,file in itertools.zip_longest(filestitle, filespdf)]
     results += [
         InlineQueryResultDocument(
             id=str(uuid4()),
-            title=query,
-            document_url=cm,
+            title=title,
+            document_url=file,
             mime_type="application/pdf",
+            # mime_type="application/vnd.ms-powerpoint",
             caption=f"course_code : {result['course_code']} \ncourse_name : {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
             reply_markup = reply_markup
-            ) for cm in filesppt
+            ) for title,file in itertools.zip_longest(filestitle, filesppt)
 
     ]
 
@@ -337,7 +363,8 @@ def fast_serve_file(update: Update, context: CallbackContext):
         MSG += "<strong>course_description </strong>: " + f"{value['course_description']} \n"
         MSG += "<strong>semester </strong>: " + f"{value['semester']} \n"
         MSG += "<strong>department </strong>: " + f"{value['department']['name']} \n"
-        MSG += "<strong>contributors </strong>: " + f"{value['created_by'], value['filescontributor'].get('tg_contributor', ' ')} \n"
+        MSG += "<strong>contributors </strong>: " + f"{value['created_by'],} \n" 
+        # set(value['filescontributor'].get('tg_contributor', ' '))} \n"
         MSG += "<strong>file format </strong>: " + f"{value['ava' ]} "
         MSG += '\n__________________________________________\n'
         query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
@@ -475,15 +502,17 @@ def ppt_manager(update: Update, context: CallbackContext):
         caption_text += f"\n _______ {course['course_code']} _______"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
+    file_name = update.effective_message.document.file_name 
     file_caption = update.effective_message.caption
     file_from = update.effective_message.from_user 
     QUERY['msg_id'] = update.effective_message.message_id
     typ = 'ppt'
+    print(update.effective_message.document, '-----document-----', file_name)
     file_obj = {
             "cm": course['course_id'],
             "tg_file_id": str(file_id),
             "tg_file_url": context.bot.get_file(file_id).file_path,
-            "title": file_caption if file_caption else file_from.first_name
+            "title": file_name
 
         }
     fetcher.upload_file(file_obj, typ)
@@ -524,15 +553,17 @@ def pdf_manager(update: Update, context: CallbackContext):
         caption_text += f"\n _______ {course['course_code']} _______"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
+    file_name = update.effective_message.document.file_name 
     file_caption = update.effective_message.caption 
     file_from = update.effective_message.from_user 
     QUERY['msg_id'] = update.effective_message.message_id
     typ = 'pdf'
+    print(update.effective_message.document, '-----document-----', file_name)
     file_obj = {
             "cm": course['course_id'],
             "tg_file_id": str(file_id),
             "tg_file_url": context.bot.get_file(file_id).file_path,
-            "title": file_caption if file_caption else file_from.first_name
+            "title": file_name
 
         }
     fetcher.upload_file(file_obj, typ)
@@ -577,7 +608,7 @@ def customer_service_information(update: Update, context: CallbackContext) -> in
     MSG = f"Feedback from [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot"
     MSG += '\n___Feedback-Message___\n\n '
     MSG += text 
-    context.bot.send_message(chat_id = NFEEDBACKS, text=MSG)
+    context.bot.send_message(chat_id = NCLOUDXFEEDBACKS, text=MSG)
     reply_text = f"Thanks for your feedback, 🧡 {user.first_name} "
     update.message.reply_text(
         text = reply_text,
@@ -615,6 +646,8 @@ def main() -> None:
 
                 CommandHandler('start', start), 
                 CommandHandler('list', show_course),
+                MessageHandler(Filters.regex('^Feed Back$'), feed_back),
+                MessageHandler(Filters.regex('^How To$'), how_to),
                 MessageHandler(
                     Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
                         ) & ~(
@@ -707,15 +740,15 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(fast_download_handeler)
-    dispatcher.add_handler(InlineQueryHandler(inlinequery))
+    dispatcher.add_handler(InlineQueryHandler(inline_service))
 
 
 
     # Start the Bot
-    # updater.start_polling()
+    updater.start_polling()
     
     # Start the Bot on Cloud
-    updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
+    # updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
     
 
     updater.idle()

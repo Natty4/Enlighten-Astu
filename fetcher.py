@@ -2,12 +2,13 @@ import requests
 
 baseUrl = "https://enlightenapi.herokuapp.com"
 
-
 def recored_new_user(obj):
 
     url = f"{baseUrl}/api/tguser"
     data = obj
     respons = requests.post(url, data=data)
+    if respons.status_code != 201:
+        return False
     return respons
 
 
@@ -133,22 +134,22 @@ def get_course_tg(ccode):
     aval = {}
     filesid = {}
     filespath = {}
-    filescontributor = {}
+    filetitle = {}
     for a in ava:
         aval[a] = len(resp[a.lower() + "s"])
 
     for i in aval:
         fid = []
         fpath = []
-        fcontributor = []
+        ftitle = []
         j = resp[i.lower() + "s"]
         for file in j:
             fid.append(file["tg_file_id"])
             fpath.append(file["tg_file_url"])
-            fcontributor.append(file['title'])
+            ftitle.append(file['title'])
         filesid[i] = fid
         filespath[i] = fpath
-        filescontributor['tg_contributor'] = fcontributor
+        filetitle['file_title'] = ftitle
     course = {}
     course["course_id"] = resp["id"]
     course["course_name"] = resp["course_name"]
@@ -160,7 +161,7 @@ def get_course_tg(ccode):
     course["ava"] = aval
     course["filesid"] = filesid
     course["filespath"] = filespath
-    course["filescontributor"] = filescontributor
+    course["filetitle"] = filetitle
     respons[resp["course_name"]] = course
 
     return respons
@@ -178,22 +179,22 @@ def get_fast(ccode):
     aval = {}
     filesid = {}
     filespath = {}
-    filescontributor = {}
+    filetitle = {}
     for a in ava:
         aval[a] = len(resp[a.lower() + "s"])
 
     for i in aval:
         fid = []
         fpath = []
-        fcontributor = []
+        ftitle = []
         j = resp[i.lower() + "s"]
         for file in j:
             fid.append(file["tg_file_id"])
             fpath.append(file["tg_file_url"])
-            fcontributor.append(file['title'])
+            ftitle.append(file['title'])
         filesid[i] = fid
         filespath[i] = fpath
-        filescontributor['tg_contributor'] = fcontributor
+        filetitle['file_title'] = ftitle
     course = {}
     course["course_id"] = resp["id"]
     course["course_name"] = resp["course_name"]
@@ -205,7 +206,7 @@ def get_fast(ccode):
     course["ava"] = aval
     course["filesid"] = filesid
     course["filespath"] = filespath
-    course["filescontributor"] = filescontributor
+    course["filetitle"] = filetitle
     respons[resp["course_name"]] = course
 
     return respons
