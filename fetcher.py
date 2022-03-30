@@ -135,6 +135,7 @@ def get_course_tg(ccode):
     filesid = {}
     filespath = {}
     filetitle = {}
+    filecontributor = {}
     for a in ava:
         aval[a] = len(resp[a.lower() + "s"])
 
@@ -142,14 +143,17 @@ def get_course_tg(ccode):
         fid = []
         fpath = []
         ftitle = []
+        fcontributor = []
         j = resp[i.lower() + "s"]
         for file in j:
             fid.append(file["tg_file_id"])
             fpath.append(file["tg_file_url"])
             ftitle.append(file['title'])
+            fcontributor.append(file['contributors'])
         filesid[i] = fid
         filespath[i] = fpath
         filetitle['file_title'] = ftitle
+        filecontributor['tg_contributors'] = fcontributor
     course = {}
     course["course_id"] = resp["id"]
     course["course_name"] = resp["course_name"]
@@ -162,6 +166,7 @@ def get_course_tg(ccode):
     course["filesid"] = filesid
     course["filespath"] = filespath
     course["filetitle"] = filetitle
+    course["filecontributor"] = filecontributor
     respons[resp["course_name"]] = course
 
     return respons
@@ -180,6 +185,7 @@ def get_fast(ccode):
     filesid = {}
     filespath = {}
     filetitle = {}
+    filecontributor = {}
     for a in ava:
         aval[a] = len(resp[a.lower() + "s"])
 
@@ -187,14 +193,17 @@ def get_fast(ccode):
         fid = []
         fpath = []
         ftitle = []
+        fcontributor = []
         j = resp[i.lower() + "s"]
         for file in j:
             fid.append(file["tg_file_id"])
             fpath.append(file["tg_file_url"])
             ftitle.append(file['title'])
+            fcontributor.append(file['contributors'])
         filesid[i] = fid
         filespath[i] = fpath
         filetitle['file_title'] = ftitle
+        filecontributor['tg_contributors'] = fcontributor
     course = {}
     course["course_id"] = resp["id"]
     course["course_name"] = resp["course_name"]
@@ -207,6 +216,7 @@ def get_fast(ccode):
     course["filesid"] = filesid
     course["filespath"] = filespath
     course["filetitle"] = filetitle
+    course["filecontributor"] = filecontributor
     respons[resp["course_name"]] = course
 
     return respons
