@@ -363,8 +363,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
         MSG += "<strong>course_description </strong>: " + f"{value['course_description']} \n"
         MSG += "<strong>semester </strong>: " + f"{value['semester']} \n"
         MSG += "<strong>department </strong>: " + f"{value['department']['name']} \n"
-        MSG += "<strong>contributors </strong>: " + f"{value['created_by'],} \n" 
-        # set(value['filescontributor'].get('tg_contributor', ' '))} \n"
+        MSG += "<strong>contributors </strong>: " + f"{value['created_by'],set(value['filecontributor'].get('tg_contributor', ' '))} \n"
         MSG += "<strong>file format </strong>: " + f"{value['ava' ]} "
         MSG += '\n__________________________________________\n'
         query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
