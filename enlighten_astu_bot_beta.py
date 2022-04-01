@@ -57,9 +57,8 @@ markup_zero = ReplyKeyboardMarkup(reply_keyboard_0, one_time_keyboard=True, resi
 def start(update: Update, context: CallbackContext) -> int:
     QUERY = {}
     """Send message on `/start`."""
-    # Get user that sent /start and log his name
+    # Get user that sent /start and log his/her name
     user = update.message.from_user
-    # context.bot.send_message(chat_id= ADMIN ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with mrpguybot")
     context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f"new user [ \n user_id: {user.id} \n usr_name: @{user.username} \n first_name: {user.first_name} \n last_name: {user.last_name} \n is_bot: {user.is_bot} ] \n starts with enlightenastubot")
     context.bot.send_message(chat_id = NCLOUDXUSERS ,text=f'{update}')
     user_obj = {
@@ -73,18 +72,18 @@ def start(update: Update, context: CallbackContext) -> int:
         fetcher.recored_new_user(user_obj)
     except Exception as e:
         print(e,'already exist')
- 
+    
     reply_text = f" 📖📚📒📕📙📘📗📚📖 \n"
     reply_text += f"Hi! {user.first_name} Welcome "
     if context.user_data:
         reply_text += (
-            f"Again To Enlighten us too, knowldge shelf. "
+            f"Again To Enlighten us too, knowledge shelf. "
         )
     else:
         reply_text += (
-            f"To Enlighten us too, knowldge shelf. "
-            f" you can download any availabel course materials in your department easly by senading course_code "
-            f" or you can see availabel courses list by useing /list command ! \n\n"
+            f"To Enlighten us too, knowledge shelf. "
+            f" you can download any available course materials in your department easily by sending course_code "
+            f" or you can see available courses list by using /list command ! \n\n"
             f" any question | Feedback,\nwe would love to hear 🍎"
         )
   
@@ -107,13 +106,13 @@ def start_over(update: Update, context: CallbackContext) -> int:
     reply_text += f"Hi! {user.first_name} Welcome "
     if context.user_data:
         reply_text += (
-            f"Again To Enlighten us too, knowldge shelf. \n"
+            f"Again To Enlighten us too, knowledge shelf. \n"
         )
     else:
         reply_text += (
-            f"To Enlighten us too, knowldge shelf. "
-            f" you can download any availabel course materials in your department easly by senading course_code "
-            f" or you can see availabel courses list by useing /list command ! \n\n"
+            f"To Enlighten us too, knowledge shelf. "
+            f" you can download any available course materials in your department easily by sending course_code "
+            f" or you can see available courses list by using /list command ! \n\n"
             f" any question | Feedback,\nwe would love to hear 🍎"
         )
 
@@ -146,13 +145,13 @@ def inline_service(update: Update, context: CallbackContext) -> None:
         reply_text += f"Hi! {user.first_name} Welcome "
         if context.user_data:
             reply_text += (
-                f"Again To Enlighten us too, knowldge shelf. "
+                f"Again To Enlighten us too, knowledge shelf. "
             )
         else:
             reply_text += (
-                f"To Enlighten us too, knowldge shelf. "
-                f" you can download any availabel course materials in your department easly by senading course_code "
-                f" or you can see availabel courses list by useing /list command ! \n\n"
+                f"To Enlighten us too, knowledge shelf. "
+                f" you can download any available course materials in your department easily by sending course_code "
+                f" or you can see available courses list by using /list command ! \n\n"
                 f" any question | Feedback,\nwe would love to hear 🍎"
             )
         try:
@@ -180,7 +179,7 @@ def inline_service(update: Update, context: CallbackContext) -> None:
             title=title,
             document_url=file,
             mime_type="application/pdf",
-            caption=f"course_code : {result['course_code']} \ncourse_name : {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
+            caption=f"Course Code {result['course_code']} \nCourse Name {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
             reply_markup = reply_markup
             ) for title,file in zip(filestitle, filespdf)]
     results += [
@@ -190,7 +189,7 @@ def inline_service(update: Update, context: CallbackContext) -> None:
             document_url=file,
             mime_type="application/pdf",
             # mime_type="application/vnd.ms-powerpoint",
-            caption=f"course_code : {result['course_code']} \ncourse_name : {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
+            caption=f"Course Code {result['course_code']} \nCourse Name {result['course_name']} \ndepartment {result['department']['short_name']} \nsemester : {SEMES[str(result['semester'])]}",
             reply_markup = reply_markup
             ) for title,file in zip(filestitle, filesppt)
 
@@ -219,10 +218,10 @@ def show_course(update: Update, context: CallbackContext):
         reply_text += '\n__________________________________________\n'
         for key,course in courses.items():
 
-            reply_text += 'course_name : ' + course['course_name'] + '\n'
-            reply_text += 'course_code : ' + course['course_code'] + '\n'
-            reply_text += 'department : ' + str(course['department']['short_name']) + '\n'
-            reply_text += 'contributor : ' + course['created_by'] + '\n\n\n'
+            reply_text += 'Course Name ' + course['course_name'] + '\n'
+            reply_text += 'Course Code ' + course['course_code'] + '\n'
+            reply_text += 'Department : ' + str(course['department']['short_name']) + '\n'
+            reply_text += 'Contributor : ' + course['created_by'] + '\n\n\n'
         reply_text += f'\n\n copy and pase the course_code you want to download .'
         query.reply_text(text=reply_text, reply_markup=reply_markup)
 
@@ -267,12 +266,12 @@ def paginate_show_course(update: Update, context: CallbackContext):
         reply_text += '\n__________________________________________\n'
         for key,course in courses.items():
 
-            reply_text += 'course_name : ' + course['course_name'] + '\n'
-            reply_text += 'course_code : ' + course['course_code'] + '\n'
-            reply_text += 'department : ' + str(course['department']['short_name']) + '\n'
-            reply_text += 'contributor : ' + course['created_by'] + '\n\n\n'
+            reply_text += 'Course Name ' + course['course_name'] + '\n'
+            reply_text += 'Course Code ' + f"<strong>{course['course_code']}</strong> \n"
+            reply_text += 'Department : ' + str(course['department']['short_name']) + '\n'
+            reply_text += 'Contributor : ' + course['created_by'] + '\n\n\n'
         reply_text += f'\n\ncopy and paset the course_code you want to download .'
-        query.edit_message_text(text=reply_text, reply_markup=reply_markup)
+        query.edit_message_text(text=reply_text, reply_markup=reply_markup, parse_mode=ParseMode.HTML)
 
         return FASTSERVE
     else:
@@ -286,7 +285,6 @@ def paginate_show_course(update: Update, context: CallbackContext):
 def download_or_share(update: Update, context: CallbackContext) -> int:
     
     query = update.message
-    # query.answer("✨ commingsoon ✨")
     keyboard = [
         [
             InlineKeyboardButton(" ⬇️ Download ", callback_data=str(DOWNLOAD) + 'MrPGuy' + query.text.upper()),
@@ -324,10 +322,10 @@ def fast_show_download_option(update: Update, context: CallbackContext):
         txt = ''
         for k,v in available_formats.items():
             txt += f"{k} - {v} | "
-        reply_text += '\n\ncourse_name : ' + course['course_name']
-        reply_text += '\ncourse_code : ' + course['course_code']
-        reply_text += '\ncourse_description : ' + course['course_description']
-        reply_text += f"\navailable : " + txt if txt else f"\n available : " + ' 0 '
+        reply_text += '\n\nCourse Name ' + course['course_name']
+        reply_text += '\nCourse Code ' + f"<strong>{course['course_code']}</strong> "
+        reply_text += '\nCourse Description : ' + course['course_description']
+        reply_text += f"\nAvailable : " + txt if txt else f"\n Available : " + ' 0 '
         reply_text += f"\n _______ {course['course_code']} _______"
             
 
@@ -338,7 +336,7 @@ def fast_show_download_option(update: Update, context: CallbackContext):
 
         reply_markup = InlineKeyboardMarkup(keyboard)   
 
-        query.edit_message_text(text= reply_text, reply_markup = reply_markup)
+        query.edit_message_text(text= reply_text, reply_markup = reply_markup, parse_mode = ParseMode.HTML)
         return FASTSERVE
     else :
         query.from_user.send_message(text=f"Invalid Course code: \"{query.data.split('MrPGuy')[-1]} \n make sure that all characters are correct",)
@@ -357,14 +355,20 @@ def fast_serve_file(update: Update, context: CallbackContext):
         files = []
         for key,value in data.items():
             files = value['filesid'][query.data.split('MrPGuy')[0]]
+        txt = ''
+        for k,v in value['ava'].items():
+            txt += f"{k} - {v} | "
+        tgcont = ''
+        for cont in set(value['filecontributor'].get('tg_contributors', 'anonymous')):
+            tgcont += f"{cont}, "
         MSG = f"<strong> {value['course_name']} </strong> "
         MSG += '\n__________________________________________\n\n'
-        MSG += "<strong>course_name </strong>: " + f"{value['course_name']} \n"
-        MSG += "<strong>course_description </strong>: " + f"{value['course_description']} \n"
-        MSG += "<strong>semester </strong>: " + f"{value['semester']} \n"
-        MSG += "<strong>department </strong>: " + f"{value['department']['name']} \n"
-        MSG += "<strong>contributors </strong>: " + f"{value['created_by'],set(value['filecontributor'].get('tg_contributor', ' '))} \n"
-        MSG += "<strong>file format </strong>: " + f"{value['ava' ]} "
+        MSG += "<strong>Course Name </strong>: " + f"{value['course_name']} \n"
+        MSG += "<strong>Course Description </strong>: " + f"{value['course_description']} \n"
+        MSG += "<strong>Semester </strong>: " + f"{SEMES[str(value['semester'])]} \n"
+        MSG += "<strong>Department </strong>: " + f"{value['department']['name']} \n"
+        MSG += "<strong>Contributors </strong>: " + f"{value['created_by']}, {tgcont} \n"
+        MSG += "<strong>File Format </strong>: " + f"{txt} "
         MSG += '\n__________________________________________\n'
         query.from_user.send_message( MSG, parse_mode = ParseMode.HTML)
         for file in files:
@@ -376,7 +380,7 @@ def fast_serve_file(update: Update, context: CallbackContext):
         # context.bot.send_message(user.id, reply_text)
         return FASTSERVE
     else:
-        MSG = f"Invalid Course code: \"{query.data.split('MrPGuy')[-1]}re that all characters are correct"
+        MSG = f"Course Code Not Found: \"{query.data.split('MrPGuy')[-1]} make sure that all characters are correct"
         reply_text = MSG
        
         update.message.reply_text(text= reply_text)
@@ -406,10 +410,10 @@ def fast_show_share_option(update: Update, context: CallbackContext) -> int:
         txt = ''
         for k,v in available_formats.items():
             txt += f"{k} - {v} | "
-        reply_text += '\n\ncourse_name : ' + course['course_name']
-        reply_text += '\ncourse_code : ' + course['course_code']
-        reply_text += '\ncourse_description : ' + course['course_description']
-        reply_text += f"\navailable : " + txt if txt else f"\n available : " + ' 0 '
+        reply_text += '\n\nCourse Name ' + course['course_name']
+        reply_text += '\nCourse Code ' + course['course_code']
+        reply_text += '\nCourse Description : ' + course['course_description']
+        reply_text += f"\nAvailable : " + txt if txt else f"\n Available : " + ' 0 '
         reply_text += f"\n _______ {course['course_code']} _______"
         QUERY['course_name'] = course['course_name']
         QUERY['course_code'] = course['course_code']
@@ -435,7 +439,7 @@ def fast_show_share_option(update: Update, context: CallbackContext) -> int:
 
         return FASTSHARE
     else:
-        query.from_user.send_message(text=f"Invalid Course code: \"{query.data.split('MrPGuy')[-1]}\" \n make sure that all characters are correct",)
+        query.from_user.send_message(text=f"Course Code Not Found: \"{query.data.split('MrPGuy')[-1]}\" \n make sure that all characters are correct",)
         return FASTSHARE
 
 def fast_recive_file(update: Update, context: CallbackContext) -> int:
@@ -456,10 +460,10 @@ def fast_recive_file(update: Update, context: CallbackContext) -> int:
         txt = ''
         for k,v in available_formats.items():
             txt += f"{k} - {v} | "
-        reply_text += '\n\ncourse_name : ' + course['course_name']
-        reply_text += '\ncourse_code : ' + course['course_code']
-        reply_text += '\ncourse_description : ' + course['course_description']
-        reply_text += f"\navailable : " + txt if txt else f"\n available : " + ' 0 '
+        reply_text += '\n\nCourse Name ' + course['course_name']
+        reply_text += '\nCourse Code ' + course['course_code']
+        reply_text += '\nCourse Description : ' + course['course_description']
+        reply_text += f"\nAvailable : " + txt if txt else f"\n Available : " + ' 0 '
         reply_text += f"\n _______ {course['course_code']} _______"
         reply_text += f"\n Fantastic Now Send Files Releted to This 👆 Course  - ! "
         query.edit_message_text(text = reply_text)
@@ -494,10 +498,10 @@ def ppt_manager(update: Update, context: CallbackContext):
         txt = ''
         for k,v in available_formats.items():
             txt += f"{k} - {v} | "
-        caption_text += '\n\ncourse_name : ' + course['course_name']
-        caption_text += '\ncourse_code : ' + course['course_code']
-        caption_text += '\ncourse_description : ' + course['course_description']
-        caption_text += f"\navailable : " + txt if txt else f"\n available : " + ' 0 '
+        caption_text += '\n\nCourse Name ' + course['course_name']
+        caption_text += '\nCourse Code ' + course['course_code']
+        caption_text += '\nCourse Description : ' + course['course_description']
+        caption_text += f"\nAvailable : " + txt if txt else f"\n Available : " + ' 0 '
         caption_text += f"\n _______ {course['course_code']} _______"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
@@ -510,7 +514,8 @@ def ppt_manager(update: Update, context: CallbackContext):
             "cm": course['course_id'],
             "tg_file_id": str(file_id),
             "tg_file_url": context.bot.get_file(file_id).file_path,
-            "title": file_name
+            "title": file_name,
+            "contributors": file_from
 
         }
     fetcher.upload_file(file_obj, typ)
@@ -544,10 +549,10 @@ def pdf_manager(update: Update, context: CallbackContext):
         txt = ''
         for k,v in available_formats.items():
             txt += f"{k} - {v} | "
-        caption_text += '\n\ncourse_name : ' + course['course_name']
-        caption_text += '\ncourse_code : ' + course['course_code']
-        caption_text += '\ncourse_description : ' + course['course_description']
-        caption_text += f"\navailable : " + txt if txt else f"\n available : " + ' 1 '
+        caption_text += '\n\nCourse Name ' + course['course_name']
+        caption_text += '\nCourse Code ' + course['course_code']
+        caption_text += '\nCourse Description : ' + course['course_description']
+        caption_text += f"\nAvailable : " + txt if txt else f"\n Available : " + ' 1 '
         caption_text += f"\n _______ {course['course_code']} _______"
     msg_id = update.effective_message.message_id
     file_id = update.effective_message.document.file_id 
@@ -560,7 +565,8 @@ def pdf_manager(update: Update, context: CallbackContext):
             "cm": course['course_id'],
             "tg_file_id": str(file_id),
             "tg_file_url": context.bot.get_file(file_id).file_path,
-            "title": file_name
+            "title": file_name,
+            "contributors": file_from
 
         }
     fetcher.upload_file(file_obj, typ)
@@ -669,7 +675,7 @@ def main() -> None:
                 CommandHandler('start', start), 
                 CallbackQueryHandler(paginate_show_course, pattern='^' + '[' + str(1) + '-' + str(9) + ']' + '+'  + '$'),
                 CallbackQueryHandler(fast_serve_file, pattern='^' + 'PPT' + '|' + 'PDF' + '|' + 'Book' + '$'),
-                MessageHandler(
+                MessageHandler( 
                     Filters.regex(pattern='^' + '[' + 'A' + '-' + 'Z' + str(0) + '-' + str(9) + ']'  + '{' + str(3) + ',' + '}' + '$'
                         ) & ~(
 
@@ -742,10 +748,10 @@ def main() -> None:
 
 
     # Start the Bot
-    # updater.start_polling()
+    updater.start_polling()
     
     # Start the Bot on Cloud
-    updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
+    # updater.start_webhook(listen="0.0.0.0", port = PORT, url_path = TOKEN, webhook_url = "https://enlightentgbot.herokuapp.com/" + TOKEN)
     
 
     updater.idle()

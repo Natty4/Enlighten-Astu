@@ -1,5 +1,6 @@
 import requests
 
+# baseUrl = "http://127.0.0.1:8000"
 baseUrl = "https://enlightenapi.herokuapp.com"
 
 def recored_new_user(obj):
@@ -123,6 +124,10 @@ def get_all_by_sem_and_dep(sem, dep):
     return respons
 
 
+import re
+import ast
+
+
 def get_course_tg(ccode):
     url = f"{baseUrl}/api/cms/{ccode}"
     data = requests.get(url)
@@ -146,15 +151,17 @@ def get_course_tg(ccode):
         fcontributor = []
         j = resp[i.lower() + "s"]
         for file in j:
+            fcont = ast.literal_eval(re.search('({.+})', file['contributors']).group(0)).get('first_name', 'anonymous')
             fid.append(file["tg_file_id"])
             fpath.append(file["tg_file_url"])
             ftitle.append(file['title'])
-            fcontributor.append(file['contributors'])
+            fcontributor.append(fcont)
         filesid[i] = fid
         filespath[i] = fpath
         filetitle['file_title'] = ftitle
         filecontributor['tg_contributors'] = fcontributor
     course = {}
+
     course["course_id"] = resp["id"]
     course["course_name"] = resp["course_name"]
     course["course_code"] = resp["course_code"]
@@ -196,10 +203,11 @@ def get_fast(ccode):
         fcontributor = []
         j = resp[i.lower() + "s"]
         for file in j:
+            fcont = ast.literal_eval(re.search('({.+})', file['contributors']).group(0)).get('first_name', 'anonymous')
             fid.append(file["tg_file_id"])
             fpath.append(file["tg_file_url"])
             ftitle.append(file['title'])
-            fcontributor.append(file['contributors'])
+            fcontributor.append(fcont)
         filesid[i] = fid
         filespath[i] = fpath
         filetitle['file_title'] = ftitle
