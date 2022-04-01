@@ -5,6 +5,11 @@ class TGUserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = TGUser
 		fields = '__all__'
+		
+class TGHelperSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = TGHelper
+		fields = '__all__'
 
 class PPTSerializer(serializers.ModelSerializer):
 	class Meta:

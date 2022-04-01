@@ -24,6 +24,16 @@ class TGUserCreateApiView(APIView):
 class TGUsersListApiView(ListAPIView):
     queryset = TGUser.objects.all()
     serializer_class = TGUserSerializer
+ 
+class TGHelperCreateApiView(APIView):
+	queryset = TGHelper.objects.all()
+	serializer_class = TGHelperSerializer
+	def post(self, request, format=None):
+		serializer = TGHelperSerializer(data = request.data)
+		if serializer.is_valid(raise_exception = True):
+			serializer.save()
+			return Response(status = status.HTTP_201_CREATED)
+		return Response(status = status.HTTP_400_BAD_REQUEST)
 
 class LecturePPTCreateApiView(APIView):
 	queryset = LecturePPT.objects.all()

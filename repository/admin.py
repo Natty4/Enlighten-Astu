@@ -20,7 +20,6 @@ class CourseMaterialAdmin(admin.ModelAdmin):
 	inlines = [LecturePPTInline, LecturePDFInline, LectureBookInline]
 
 
-
 @admin.register(AssignmentExam)
 class AssignmentExamAdmin(admin.ModelAdmin):
 	list_display = ['course_name', 'course_code', 'semester', 'created_by', 'updated', 'is_active']
@@ -55,3 +54,7 @@ class LecturePDFAdmin(admin.ModelAdmin):
 @admin.register(LectureBook)
 class LectureBookAdmin(admin.ModelAdmin):
 	list_display = ['cm', 'tg_file_id']
+
+@admin.register(TGHelper)
+class TGHelperAdmin(admin.ModelAdmin):
+	pass

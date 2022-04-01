@@ -16,6 +16,7 @@ urlpatterns = [
     path('semesters/<int:semes>' , SemesterDetailApiView.as_view(), name = "semester_detail"),
     path('departments' , AllDepartmentListApiView.as_view(), name = "department_list"),
     path('department/<str:school>' , DepartmentListApiView.as_view(), name = "department_list"),
+    path('tghelper' , TGHelperCreateApiView.as_view(), name = "tg_helper_create"),
     path('tguser' , TGUserCreateApiView.as_view(), name = "tg_user_create"),
     path('tgusers' , TGUsersListApiView.as_view(), name = "tgusers_list"),
     path('ppt' , LecturePPTCreateApiView.as_view(), name = "ppt_create"),
