@@ -17,7 +17,7 @@ API_KEY_X = str(os.getenv('API_KEY_X'))
 API_SECRET_X = str(os.getenv('API_SECRET_X'))
 
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'enlightenapi.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -89,17 +89,27 @@ WSGI_APPLICATION = 'Enlight.wsgi.application'
 
 # Database
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# db_from_env = dj_database_url.config(conn_max_age=500)
+# DATABASES['default'].update(db_from_env)
+
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['DBNAME'],
+        'HOST': os.environ['DBHOST'],
+        'USER': os.environ['DBUSER'],
+        'PASSWORD': os.environ['DBPASS'] 
     }
 }
-
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
-
-
 # Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -207,8 +217,8 @@ CLOUDINARY_STORAGE = {
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static/' 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'static/' 
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media/'
