@@ -1,7 +1,7 @@
 import requests
 
 # baseUrl = "http://127.0.0.1:8000"
-baseUrl = "https://enlightenapi.herokuapp.com"
+baseUrl = "https://enlighten-astu-api.azurewebsites.net"
 
 def recored_new_user(obj):
 
