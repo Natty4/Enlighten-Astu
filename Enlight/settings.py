@@ -5,14 +5,16 @@ BY : Natnael(MrPGuy)
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 import dj_database_url
 
+load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJ_SECRET_KEY')
-CLOUD_NAME_X = os.environ.get('CLOUD_NAME_X')
-API_KEY_X = os.environ.get('API_KEY_X')
-API_SECRET_X = os.environ.get('API_SECRET_X')
+SECRET_KEY = str(os.getenv('DJ_SECRET_KEY'))
+CLOUD_NAME_X = str(os.getenv('CLOUD_NAME_X'))
+API_KEY_X = str(os.getenv('API_KEY_X'))
+API_SECRET_X = str(os.getenv('API_SECRET_X'))
 
 DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'enlightenapi.herokuapp.com']
